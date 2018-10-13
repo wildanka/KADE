@@ -1,6 +1,8 @@
 <resources>
+    <dimen name="margin_middle">8dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="toolbar_size">56dp</dimen>
-    <dimen name="horizontal_margin">16dp</dimen>
-    <dimen name="vertical_margin">16dp</dimen>
+    <dimen name="logo_size">56dp</dimen>
+    <dimen name="club_name_size">18sp</dimen>
+    <dimen name="score_size">18sp</dimen>
+    <dimen name="detail_score_size">26sp</dimen>
 </resources>
