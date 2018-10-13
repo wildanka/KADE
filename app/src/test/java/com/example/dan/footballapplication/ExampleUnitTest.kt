@@ -1,4 +1,4 @@
-package com.example.dan.belajarkotlin
+package com.example.dan.footballapplication
 
 import org.junit.Test
 

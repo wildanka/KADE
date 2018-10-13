@@ -1,4 +1,5 @@
-package com.example.dan.belajarkotlin.View
+package com.example.dan.footballapplication.View
+
 
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -6,8 +7,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.widget.ImageView
 import android.widget.TextView
-import com.example.dan.belajarkotlin.Model.Club
-import com.example.dan.belajarkotlin.R
+import com.bumptech.glide.Glide
+import com.example.dan.footballapplication.Model.Club
+import com.example.dan.footballapplication.R
 
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.toolbar
@@ -18,21 +20,17 @@ class ClubDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         clubDetailUI = ClubDetailAnkoUI()
         clubDetailUI.setContentView(this)
-        val club = intent.getParcelableExtra<Club>("club_extra")
+
+
+
+//        val club = intent.getStringExtra("clubName")
+        val club = intent.getParcelableExtra<Club>("clubName")
         clubDetailUI.textClubName.text = club.clubName
         clubDetailUI.textClubDescription.text = club.clubDesc
-        clubDetailUI.imgClubLogo.imageResource = club.clubLogo!!
 
-        //region xml
-  /*      setContentView(R.layout.activity_anko_test)
-        setSupportActionBar(toolbar)
+        //TODO: menggunakan glide pada halaman detail, STATUS : DONE
+        Glide.with(this).load(club.clubLogo).into(clubDetailUI.imgClubLogo)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)*/
-        //endregion xml
     }
 
 

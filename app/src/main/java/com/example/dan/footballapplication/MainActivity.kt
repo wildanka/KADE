@@ -1,23 +1,26 @@
-package com.example.dan.belajarkotlin.View
+package com.example.dan.footballapplication
 
-import android.graphics.Color
+import android.content.Intent
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
-import com.example.dan.belajarkotlin.Model.Club
-import com.example.dan.belajarkotlin.R
-import com.example.dan.belajarkotlin.View.Adapter.ClubRecyclerViewAdapter
-
+import android.widget.Toast
+import com.example.dan.footballapplication.Model.Club
+import com.example.dan.footballapplication.View.Adapter.ClubRecyclerAdapter
+import com.example.dan.footballapplication.View.ClubDetailActivity
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.toolbar
 import org.jetbrains.anko.recyclerview.v7.recyclerView
+
 
 class MainActivity : AppCompatActivity() {
     private var clubList : MutableList<Club> = mutableListOf()
@@ -26,24 +29,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mainUI = MainActivityAnkoUI()
         mainUI.setContentView(this)
-
-        //region fab
-        /*
-        setSupportActionBar(toolbar)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
-        */
-        //endregion fab
-
         //initdata dan inflate ke adapter
         initData()
 
         //region inflate recyclerview to adapter
         mainUI.rvListClub.layoutManager = LinearLayoutManager(this)
-        mainUI.rvListClub.adapter = ClubRecyclerViewAdapter(this,clubList)
-        //endregion inflate recyclerview to adapter
+        mainUI.rvListClub.adapter = ClubRecyclerAdapter(this,clubList){
+            val toast = Toast.makeText(applicationContext, it.clubName, Toast.LENGTH_SHORT)
+            toast.show()
+            //TODO : menggunakan anko common Layout, STATUS : DONE
+            startActivity(intentFor<ClubDetailActivity>("clubName" to Club(it.clubName,it.clubLogo,it.clubDesc)))
+        }
+        //endregion
 
     }
 
@@ -77,41 +74,24 @@ class MainActivity : AppCompatActivity() {
         //Recycled the typed array
         logo.recycle()
     }
+
 }
 
-class MainActivityAnkoUI : AnkoComponent<MainActivity>{
+class MainActivityAnkoUI : AnkoComponent<MainActivity> {
     lateinit var rvListClub: RecyclerView
     lateinit var tbListClub: Toolbar
     override fun createView(ui: AnkoContext<MainActivity>) = with(ui) {
-        verticalLayout{
-            tbListClub = toolbar(){
-                setTitle("Football Club")
-                backgroundColor = ContextCompat.getColor(context,R.color.colorPrimary)
-                setTitleTextColor(ContextCompat.getColor(context,R.color.colorWhite))
-            }.lparams(width= matchParent,height= wrapContent)
+        verticalLayout {
+            tbListClub = toolbar() {
+                title = "Football Club"
+                backgroundColor = android.support.v4.content.ContextCompat.getColor(context, R.color.colorPrimary)
+                setTitleTextColor(android.support.v4.content.ContextCompat.getColor(context, R.color.colorWhite))
+            }.lparams(width = matchParent, height = wrapContent)
 
-            rvListClub = recyclerView(){
+            rvListClub = recyclerView() {
 
-            }.lparams(width= matchParent,height = matchParent)
+            }.lparams(width = matchParent, height = matchParent)
 
         }
     }
-}
-
-class ClubItemUI : AnkoComponent<ViewGroup> {
-    lateinit var ivClubLogo : ImageView
-    lateinit var tvClubName : TextView
-    override fun createView(ui: AnkoContext<ViewGroup>): View = with(ui){
-        linearLayout {
-            orientation = LinearLayout.HORIZONTAL
-            padding = dip(16)
-
-            ivClubLogo = imageView(R.drawable.img_barca).lparams(width = dip(50), height = dip(50))
-            tvClubName = textView().lparams(width = wrapContent, height = wrapContent) {
-                gravity = Gravity.CENTER_VERTICAL
-                margin = dip(10)
-            }
-        }
-    }
-
 }
