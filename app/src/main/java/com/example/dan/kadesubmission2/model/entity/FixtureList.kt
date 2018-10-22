@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 open class FixtureList{
+
     @SerializedName("idEvent")
     @Expose
     var idEvent: String? = null
@@ -34,5 +35,6 @@ open class FixtureList{
 
     @SerializedName("dateEvent")
     @Expose
-    open var date: String? = null
+
+    var date: String? = null
 }

@@ -9,12 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.example.dan.kadesubmission2.R
+import com.example.dan.kadesubmission2.model.entity.Favorite
 import com.example.dan.kadesubmission2.model.entity.FixtureList
 import com.example.dan.kadesubmission2.view.DetailFixturesActivity
 
-class RVAdapter(private val mContext: Context) : RecyclerView.Adapter<RVAdapter.RVHolder>(){
+class RVFavoriteAdapter(private val mContext: Context) : RecyclerView.Adapter<RVFavoriteAdapter.RVHolder>(){
     val inflater : LayoutInflater
-    var listFixture : List<FixtureList> = mutableListOf()
+    var listFixture : List<Favorite> = mutableListOf()
 
     init {
         inflater = LayoutInflater.from(mContext)
@@ -28,28 +29,13 @@ class RVAdapter(private val mContext: Context) : RecyclerView.Adapter<RVAdapter.
         return listFixture.size
     }
 
-    fun setupListFixture(fixtures : MutableList<FixtureList>){
+    fun setupListFixture(fixtures : MutableList<Favorite>){
         this.listFixture = fixtures
         notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(holder: RVHolder, position: Int) {
         holder.bind(listFixture[position])
-        /*val fixture = listFixture[position]
-        holder.tvHomeClub.text = fixture.homeClub
-        holder.tvAwayClub.text = fixture.awayClub
-        holder.tvHomeClubScore.text = fixture.homeClubScore
-        holder.tvAwayClubScore.text = fixture.awayClubScore
-        holder.tvMatchTime.text = fixture.date
-
-        holder.cardViewListMatch.setOnClickListener {
-            val intent = Intent(mContext,DetailFixturesActivity::class.java).apply {
-                putExtra("ID_CLUB_HOME",fixture.idHomeTeam)
-                putExtra("ID_CLUB_AWAY",fixture.idAwayTeam)
-                putExtra("ID_EVENT",fixture.idEvent)
-            }
-            startActivity(mContext,intent,null)
-        }*/
     }
 
     inner class RVHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -60,18 +46,29 @@ class RVAdapter(private val mContext: Context) : RecyclerView.Adapter<RVAdapter.
         val tvMatchTime = itemView.findViewById<TextView>(R.id.match_time)
         val cardViewListMatch = itemView.findViewById<CardView>(R.id.cv_recycler_item)
 
-        fun bind(fixture : FixtureList){
-            tvHomeClub.text = fixture.homeClub
-            tvAwayClub.text = fixture.awayClub
-            tvHomeClubScore.text = fixture.homeClubScore
-            tvAwayClubScore.text = fixture.awayClubScore
-            tvMatchTime.text = fixture.date
-            itemView.setOnClickListener{
-                mContext.startActivity(Intent(mContext,DetailFixturesActivity::class.java)
-                        .putExtra("ID_CLUB_HOME",fixture.idHomeTeam)
-                        .putExtra("ID_CLUB_AWAY",fixture.idAwayTeam)
-                        .putExtra("ID_EVENT",fixture.idEvent)
-                )
+        fun bind(fixture : Favorite){
+            tvHomeClub.text = fixture.homeTeam
+            tvAwayClub.text = fixture.awayTeam
+
+                if (fixture.homeScore == "null"){
+                    tvHomeClubScore.text = "-"
+                }else{
+                    tvHomeClubScore.text = fixture.homeScore
+                }
+
+                if (fixture.awayScore == "null"){
+                    tvAwayClubScore.text = "-"
+                }else{
+                    tvAwayClubScore.text = fixture.awayScore
+                }
+
+                tvMatchTime.text = fixture.eventDate
+                itemView.setOnClickListener{
+                    mContext.startActivity(Intent(mContext,DetailFixturesActivity::class.java)
+                            .putExtra("ID_CLUB_HOME",fixture.homeID)
+                            .putExtra("ID_CLUB_AWAY",fixture.awayID)
+                            .putExtra("ID_EVENT",fixture.idEvent)
+                    )
 
             }
         }

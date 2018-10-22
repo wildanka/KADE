@@ -1,5 +1,6 @@
 package com.example.dan.kadesubmission2.repository
 
+import android.annotation.SuppressLint
 import android.arch.lifecycle.MutableLiveData
 import android.util.Log
 import com.example.dan.kadesubmission2.model.ServiceGenerator
@@ -10,6 +11,8 @@ import com.example.dan.kadesubmission2.model.networkLayer.ApiInterface
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class FixtureRepository() {
@@ -43,6 +46,12 @@ class FixtureRepository() {
 
         } )
         return fixturesLiveData
+    }
+
+
+    @SuppressLint("SimpleDateFormat")
+    fun toSimpleString(date: Date?): String? = with(date ?: Date()) {
+        SimpleDateFormat("EEE, dd MM yyy").format(this)
     }
 
     fun fetchNextFixturesFeed(): MutableLiveData<FixtureFeed>{

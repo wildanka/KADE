@@ -15,11 +15,22 @@ import com.example.dan.kadesubmission2.R
 import com.example.dan.kadesubmission2.model.entity.FixtureFeed
 import com.example.dan.kadesubmission2.view.adapter.RVAdapter
 import com.example.dan.kadesubmission2.viewmodel.NextFixturesFragmentViewModel
-import com.example.dan.kadesubmission2.viewmodel.PrevFixturesFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_list_match.*
 
 class NextFixturesFragment : Fragment(){
     private val TAG = "Fragment NEXT FIXTURES"
+    /**
+     * Initialize newInstance for passing parameters
+     */
+    companion object {
+        fun newInstance(): NextFixturesFragment {
+            val nextFixturesFragment = NextFixturesFragment()
+            val args = Bundle()
+            nextFixturesFragment.arguments = args
+            return nextFixturesFragment
+        }
+
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView : View = inflater.inflate(R.layout.fragment_list_match,container,false)
@@ -34,16 +45,17 @@ class NextFixturesFragment : Fragment(){
         return rootView
     }
 
-    private fun observeDataFeed(viewModel:NextFixturesFragmentViewModel, adapter: RVAdapter){
+    private fun observeDataFeed(viewModel:NextFixturesFragmentViewModel, favoritesAdapter: RVAdapter){
         viewModel.getFixtureFeed().observe(this, Observer<FixtureFeed>{ fixtureFeed ->
             if (fixtureFeed != null) {
-                adapter.setupListFixture(fixtureFeed.fixtures!!)
+                favoritesAdapter.setupListFixture(fixtureFeed.fixtures!!)
                 progressBar.visibility = View.GONE
                 Log.d(TAG, fixtureFeed.fixtures!!.get(0).date)
                 println("VIEW : "+fixtureFeed.fixtures!![0].date)
             }
         })
     }
+
 
 
 }

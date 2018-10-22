@@ -28,6 +28,7 @@ android {
 dependencies {
 
     def androidArchVersion = '1.1.1'
+    implementation "org.jetbrains.anko:anko-sqlite:$anko_version"
     implementation "android.arch.lifecycle:extensions:$androidArchVersion"
     implementation "android.arch.lifecycle:viewmodel:$androidArchVersion"
     implementation "android.arch.lifecycle:livedata:$androidArchVersion"

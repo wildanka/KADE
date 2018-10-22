@@ -3,19 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.constraint.ConstraintLayout
+    <RelativeLayout
+        android:weightSum="100"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context=".view.MainActivity"
         tools:showIn="@layout/activity_main">
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/viewpager"
+        <FrameLayout
+            android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:layout_above="@id/bottom_navbar"
+            />
 
-        </android.support.v4.view.ViewPager>
-
-    </android.support.constraint.ConstraintLayout>
+        <android.support.design.widget.BottomNavigationView
+            android:id="@+id/bottom_navbar"
+            android:layout_width="match_parent"
+            android:layout_alignParentBottom="true"
+            android:fontFamily="sans-serif-condensed"
+            app:itemIconTint="@color/navbar_color"
+            app:itemTextColor="@color/navbar_color"
+            android:foregroundTint="@color/navbar_color"
+            app:menu="@menu/menu_bottom_navbar"
+            android:layout_height="56dp" />
+    </RelativeLayout>
 </layout>
