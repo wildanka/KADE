@@ -178,17 +178,27 @@ class DetailFixturesActivity : AppCompatActivity() {
 
     private fun observeBothTeamLogoFeed(viewModel: DetailsActivityViewModel, idHome : String, idAway: String) {
         progressBarDetail.visibility = View.VISIBLE
-        viewModel.getHomeClubLogoFeed(idHome).observe(this, Observer<TeamLogoFeed>{teamLogo ->
+        viewModel.getHomeClubLogoFeed(idHome).observe(this, Observer<String>{teamLogo ->
             if (teamLogo != null) {
-                Picasso.get().load(teamLogo.teamLogos!![0].linkClubLogo).into(iv_home_team)
+                Picasso.get().load(teamLogo).into(iv_home_team)
             }
         })
-        viewModel.getAwayClubLogoFeed(idAway).observe(this, Observer<TeamLogoFeed>{teamLogo ->
+        viewModel.getAwayClubLogoFeed(idAway).observe(this, Observer<String>{teamLogo ->
             if (teamLogo != null) {
-                Picasso.get().load(teamLogo.teamLogos!![0].linkClubLogo).into(iv_away_team)
+                Picasso.get().load(teamLogo).into(iv_away_team)
             }
         })
     }
+
+/*
+    private fun loadHomeLogo(viewModel: DetailsActivityViewModel, idHome : String){
+        viewModel.getHomeClubLogoFeed(idHome).observe(this, Observer<TeamLogoFeed>{teamLogo ->
+            if (teamLogo != null) {
+                Picasso.get().load(teamLogo.teamLogos?.linkClubLogo).into(iv_home_team)
+            }
+        })
+    }
+*/
 
     private fun observeEventDetails(viewModel: DetailsActivityViewModel, idEvent : String){
         viewModel.getFixtureDetails(idEvent).observe(this, Observer<FixtureDetailsFeed>{eventDetails ->

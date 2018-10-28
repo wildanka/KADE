@@ -3,7 +3,7 @@ package com.example.dan.kadesubmission2.model.entity
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-open class FixtureList{
+open class FixtureList(s: String, s1: String, s2: String, s3: String, s4: String, s5: String, s6: String, s7: String) {
 
     @SerializedName("idEvent")
     @Expose
@@ -35,6 +35,5 @@ open class FixtureList{
 
     @SerializedName("dateEvent")
     @Expose
-
     var date: String? = null
 }

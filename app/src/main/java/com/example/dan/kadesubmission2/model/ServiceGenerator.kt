@@ -9,6 +9,9 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.adapter.rxjava2.Result.response
+
+
 
 object ServiceGenerator{
 //    val API_BASE_URL = "https://www.thesportsdb.com/"
@@ -19,6 +22,18 @@ object ServiceGenerator{
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create()) //NOTE: Add this line for RxRetrofit
+
+    private fun iniRetrofit(): Retrofit {
+        return Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+    }
+
+    fun <T> createServices(service: Class<T>): T {
+        return iniRetrofit().create(service)
+    }
+
 
     fun <S> createService(serviceClass: Class<S>): S {
         return createService(serviceClass, null)
@@ -46,5 +61,7 @@ object ServiceGenerator{
             chain.proceed(request)
         })
     }
+
+
 
 }

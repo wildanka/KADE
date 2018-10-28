@@ -27,31 +27,26 @@ class FixtureRepository() {
     }
 
     fun fetchFixturesFeed(): MutableLiveData<FixtureFeed>{
-
-        val call = placeHolderApi.getPastEvents()
+//         val call = placeHolderApi.getPastEvents()
         val fixturesLiveData : MutableLiveData<FixtureFeed> = MutableLiveData()
+        ServiceGenerator
+                .createServices(ApiInterface::class.java)
+                .getPastEvents()
+                .enqueue(object: Callback<FixtureFeed> {
+                    override fun onResponse(call: Call<FixtureFeed>, response: Response<FixtureFeed>) {
+                        fixturesLiveData.value = response.body()
+                        Log.d(TAG, fixturesLiveData.value?.fixtures!![0].homeClub)
+                        println("HASIL REPO"+fixturesLiveData.value?.fixtures!![0].homeClub)
 
-        call.enqueue(object: Callback<FixtureFeed> {
-            override fun onResponse(call: Call<FixtureFeed>, response: Response<FixtureFeed>) {
-                fixturesLiveData.value = response.body()
-                Log.d(TAG, fixturesLiveData.value?.fixtures!![0].homeClub)
-                println("HASIL REPO"+fixturesLiveData.value?.fixtures!![0].homeClub)
+                    }
 
-            }
-
-            override fun onFailure(call: Call<FixtureFeed>, t: Throwable) {
-                println("Failed to POST Message: ${ t?.message }")
-                fixturesLiveData.value = null
-            }
+                    override fun onFailure(call: Call<FixtureFeed>, t: Throwable) {
+                        println("Failed to POST Message: ${ t?.message }")
+                        fixturesLiveData.value = null
+                    }
 
         } )
         return fixturesLiveData
-    }
-
-
-    @SuppressLint("SimpleDateFormat")
-    fun toSimpleString(date: Date?): String? = with(date ?: Date()) {
-        SimpleDateFormat("EEE, dd MM yyy").format(this)
     }
 
     fun fetchNextFixturesFeed(): MutableLiveData<FixtureFeed>{
@@ -76,26 +71,28 @@ class FixtureRepository() {
         return fixturesLiveData
     }
 
-    fun fetchTeamLogo(idClub: String): MutableLiveData<TeamLogoFeed>{
-
-        val call = placeHolderApi.getTeamBadge(idClub)
+    fun fetchTeamLogo(idClub: String): MutableLiveData<String>{
+//        val call = placeHolderApi.getTeamBadge(idClub)
         val teamLogo : MutableLiveData<TeamLogoFeed> = MutableLiveData()
+        val urlTeamLogo : MutableLiveData<String> = MutableLiveData()
+        ServiceGenerator
+                .createServices(ApiInterface::class.java)
+                .getTeamBadge(idClub)
+                .enqueue(object: Callback<TeamLogoFeed> {
+                override fun onResponse(call: Call<TeamLogoFeed>, response: Response<TeamLogoFeed>) {
+                    teamLogo.value = response.body()
+                    Log.d(TAG, teamLogo.value?.teamLogos!![0].linkClubLogo)
+                    urlTeamLogo.value = teamLogo.value?.teamLogos!![0].linkClubLogo
+                    println("HASIL REPO Logo : "+teamLogo.value?.teamLogos!![0].linkClubLogo)
+                }
 
-        call.enqueue(object: Callback<TeamLogoFeed> {
-            override fun onResponse(call: Call<TeamLogoFeed>, response: Response<TeamLogoFeed>) {
-                teamLogo.value = response.body()
-                Log.d(TAG, teamLogo.value?.teamLogos!![0].linkClubLogo)
-                println("HASIL REPO Logo : "+teamLogo.value?.teamLogos!![0].linkClubLogo)
-
-            }
-
-            override fun onFailure(call: Call<TeamLogoFeed>, t: Throwable) {
-                println("Failed to POST Message: ${ t?.message }")
-                teamLogo.value = null
-            }
-
+                override fun onFailure(call: Call<TeamLogoFeed>, t: Throwable) {
+                    println("Failed to POST Message: ${ t?.message }")
+                    teamLogo.value = null
+                    urlTeamLogo.value = "KOSONG?? Astagtirullah"
+                }
         } )
-        return teamLogo
+        return urlTeamLogo
     }
 
     fun fetchFixtureDetails(idEvent: String): MutableLiveData<FixtureDetailsFeed> {

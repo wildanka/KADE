@@ -8,20 +8,24 @@ import com.example.dan.kadesubmission2.model.entity.TeamLogoFeed
 import com.example.dan.kadesubmission2.repository.FixtureRepository
 
 class DetailsActivityViewModel : ViewModel(){
-    private lateinit var homeClubLogoFeed: MutableLiveData<TeamLogoFeed>
-    private lateinit var awayClubLogoFeed: MutableLiveData<TeamLogoFeed>
+    private lateinit var homeClubLogoFeed: MutableLiveData<String>
+    private lateinit var awayClubLogoFeed: MutableLiveData<String>
     private lateinit var fixtureDataDetail: MutableLiveData<FixtureDetailsFeed>
 
     private val repo = FixtureRepository()
 
-    fun getHomeClubLogoFeed(idClub: String): LiveData<TeamLogoFeed>{
+    fun getHomeClubLogo(){
+//        return homeClubLogoFeed.value!!.teamLogos?.idTeam!!
+    }
+
+    fun getHomeClubLogoFeed(idClub: String): LiveData<String>{
         if (!::homeClubLogoFeed.isInitialized) {
             loadHomeClubLogo(idClub)
         }
         return homeClubLogoFeed
     }
 
-    fun getAwayClubLogoFeed(idClub: String): LiveData<TeamLogoFeed>{
+    fun getAwayClubLogoFeed(idClub: String): LiveData<String>{
         if (!::awayClubLogoFeed.isInitialized){
             loadAwayClubLogo(idClub)
         }

@@ -11,6 +11,7 @@ class PrevFixturesFragmentViewModel : ViewModel(){
     private lateinit var fixtures : MutableLiveData<FixtureFeed>
     private val repo = FixtureRepository()
 
+
     fun getFixtureFeed(): LiveData<FixtureFeed>{
         if (!::fixtures.isInitialized) {
             loadFixtures()
@@ -18,8 +19,11 @@ class PrevFixturesFragmentViewModel : ViewModel(){
         return fixtures
     }
 
-    private fun loadFixtures(){
+    fun loadFixtures(){
         fixtures = repo.fetchFixturesFeed()
     }
 
+    fun getFixtures(): LiveData<FixtureFeed>{
+        return fixtures
+    }
 }
