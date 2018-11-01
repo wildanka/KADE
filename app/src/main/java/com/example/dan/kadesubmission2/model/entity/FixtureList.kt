@@ -36,4 +36,8 @@ open class FixtureList(s: String, s1: String, s2: String, s3: String, s4: String
     @SerializedName("dateEvent")
     @Expose
     var date: String? = null
+
+    @SerializedName("strTime")
+    @Expose
+    var timeEvent: String? = null
 }

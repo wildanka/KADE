@@ -21,18 +21,37 @@ class MainActivityTest{
 
     @Test
     fun testRecyclerViewBehaviour() {
-        //TODO : buka next match, kemudian kembali ke menu utama
+        //TODO : cek menu match kemudian klik menu tersebut
+        onView(withId(R.id.navigation_teams)).perform(click())
+        Thread.sleep(7000) //idling menunggu response dari network
+        onView(withId(R.id.rv_list_teams))
+                .check(matches(isDisplayed()))
+        onView(withId(R.id.rv_list_teams)).perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(10))
+        onView(withId(R.id.rv_list_teams)).perform(
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(10, click())
+        )
+
+        Thread.sleep(7000) //idling menunggu response dari network
+        onView(withId(R.id.add_to_favorites)).perform(click())
+
+//        onView(allOf(withId(R.id.rv_list_teams), withParent(withId(R.id.content_frag_teams))))
+//                .check(matches(isDisplayed()))
+
+
+        /*//TODO : periksa list match
+        Thread.sleep(7000) //idling menunggu response dari network
         onView(withId(R.id.rv_list_match))
                 .check(matches(isDisplayed()))
 
         Thread.sleep(7000) //idling menunggu response dari network
+        //scroll ke posisi 10
         onView(withId(R.id.rv_list_match)).perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(10))
         onView(withId(R.id.rv_list_match)).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(10, click()))
         pressBack()
 
-        //TODO : cek menu next match kemudian klik menu tersebut
-        onView(withId(R.id.navigation_next_match)).perform(click())
+        //TODO : cek menu match kemudian klik menu tersebut
+        onView(withId(R.id.navigation_fixtures)).perform(click())
         Thread.sleep(7000)
 
         //TODO : buka salah satu pertandingan
@@ -44,7 +63,7 @@ class MainActivityTest{
         //TODO: lakukan klik terhadap menu add to/remove from favorites
         onView(withId(R.id.add_to_favorites)).perform(click())
         pressBack()
-
+*/
     }
 
 

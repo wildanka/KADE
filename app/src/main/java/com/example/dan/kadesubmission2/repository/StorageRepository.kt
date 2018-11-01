@@ -5,22 +5,13 @@ import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
 import com.example.dan.kadesubmission2.model.entity.Favorite
-import com.example.dan.kadesubmission2.model.entity.FixtureFeed
 import com.example.dan.kadesubmission2.model.localStorage.database
 import org.jetbrains.anko.db.classParser
 import org.jetbrains.anko.db.select
 
 class StorageRepository{
-   /* private fun showFavorite(){
-        context?.database?.use {
-            swipeRefresh.isRefreshing = false
-            val result = select(Favorite.TABLE_FAVORITE)
-            val favorite = result.parseList(classParser<Favorite>())
-            favorites.addAll(favorite)
-            adapter.notifyDataSetChanged()
-        }
-    }*/
-    val TAG = "Storage Repository"
+
+    val TAG = "StorageRepository"
     companion object { val instance = StorageRepository }
 
     fun fetchFavoritesFixture(mContext: Context): MutableLiveData<List<Favorite>> {
@@ -34,12 +25,12 @@ class StorageRepository{
                 favoritesReturn.value = favorites
             }
         }catch (e: SQLiteConstraintException){
-            println("Error while inserting data to database: ${ e?.message }")
+            println("Error while inserting data to FIXTURES database: ${ e?.message }")
             Log.getStackTraceString(e)
-//            snackbar(swipeRefresh, e.localizedMessage).show()
             return favoritesReturn
         }
 
         return favoritesReturn
     }
+
 }

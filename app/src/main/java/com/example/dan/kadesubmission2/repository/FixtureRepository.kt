@@ -26,12 +26,12 @@ class FixtureRepository() {
         placeHolderApi = ServiceGenerator.createService(ApiInterface::class.java)
     }
 
-    fun fetchFixturesFeed(): MutableLiveData<FixtureFeed>{
+    fun fetchFixturesFeed(idLeague : String): MutableLiveData<FixtureFeed>{
 //         val call = placeHolderApi.getPastEvents()
         val fixturesLiveData : MutableLiveData<FixtureFeed> = MutableLiveData()
         ServiceGenerator
                 .createServices(ApiInterface::class.java)
-                .getPastEvents()
+                .getPastEvents(idLeague)
                 .enqueue(object: Callback<FixtureFeed> {
                     override fun onResponse(call: Call<FixtureFeed>, response: Response<FixtureFeed>) {
                         fixturesLiveData.value = response.body()
@@ -49,9 +49,9 @@ class FixtureRepository() {
         return fixturesLiveData
     }
 
-    fun fetchNextFixturesFeed(): MutableLiveData<FixtureFeed>{
+    fun fetchNextFixturesFeed(idLeague: String): MutableLiveData<FixtureFeed>{
 
-        val call = placeHolderApi.getNextEvents()
+        val call = placeHolderApi.getNextEvents(idLeague)
         val fixturesLiveData : MutableLiveData<FixtureFeed> = MutableLiveData()
 
         call.enqueue(object: Callback<FixtureFeed> {

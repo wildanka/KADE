@@ -19,7 +19,7 @@ import com.example.dan.kadesubmission2.R
 import com.example.dan.kadesubmission2.model.entity.Favorite
 import com.example.dan.kadesubmission2.model.localStorage.database
 
-import com.example.dan.kadesubmission2.view.adapter.RVFavoriteAdapter
+import com.example.dan.kadesubmission2.view.adapter.RVFixturesAdapter
 import com.example.dan.kadesubmission2.viewmodel.FavoritesFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_list_match.*
 import org.jetbrains.anko.db.classParser
@@ -28,7 +28,7 @@ import org.jetbrains.anko.db.select
 class FavoritesFragment : Fragment(){
     private val TAG = "Fragment PREV FIXTURES"
     private var favorites : MutableList<Favorite> = mutableListOf()
-    private lateinit var adapter: RVFavoriteAdapter
+    private lateinit var adapter: RVFixturesAdapter
     /**
      * Initialize newInstance for passing parameters
      */
@@ -41,18 +41,14 @@ class FavoritesFragment : Fragment(){
         }
     }
 
-    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        showFavorite(adapter)
-        super.onActivityResult(requestCode, resultCode, data)
-    }*/
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val rootView : View = inflater.inflate(R.layout.fragment_list_match,container,false)
+        val rootView : View = inflater.inflate(R.layout.fragment_list_favorites_match,container,false)
         val rvListMatch = rootView.findViewById<RecyclerView>(R.id.rv_list_match)
         val swipeRefreshListMatch= rootView.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_list_match)
         val mViewModel = ViewModelProviders.of(this).get(FavoritesFragmentViewModel::class.java)
         rvListMatch.layoutManager = LinearLayoutManager(activity!!, LinearLayout.VERTICAL,false)
-        adapter = RVFavoriteAdapter(activity!!)
+        adapter = RVFixturesAdapter(activity!!)
         rvListMatch.adapter = adapter
 
         println(TAG)
@@ -66,7 +62,7 @@ class FavoritesFragment : Fragment(){
     }
 
 
-    private fun observeDataFeed(viewModel:FavoritesFragmentViewModel, favoritesAdapter: RVFavoriteAdapter,mContext: Context){
+    private fun observeDataFeed(viewModel:FavoritesFragmentViewModel, favoritesAdapter: RVFixturesAdapter, mContext: Context){
 
         viewModel.getFavoritesFixture(mContext).observe(this, Observer<List<Favorite>>{ favoriteFixtures ->
             if (favoriteFixtures != null) {
@@ -85,7 +81,7 @@ class FavoritesFragment : Fragment(){
         })
     }
 
-    private fun showFavorite(favoritesAdapter: RVFavoriteAdapter){
+    private fun showFavorite(favoritesAdapter: RVFixturesAdapter){
         try {
             activity!!.database.use {
                 val result = select(Favorite.TABLE_FAVORITE_EVENTS)

@@ -11,14 +11,14 @@ class NextFixturesFragmentViewModel : ViewModel(){
     private lateinit var fixtures : MutableLiveData<FixtureFeed>
     private val repo = FixtureRepository()
 
-    fun getFixtureFeed(): LiveData<FixtureFeed>{
+    fun getFixtureFeed(idLeague : String): LiveData<FixtureFeed>{
         if (!::fixtures.isInitialized) {
-            loadFixtures()
+            loadFixtures(idLeague)
         }
         return fixtures
     }
 
-    private fun loadFixtures(){
-        fixtures = repo.fetchNextFixturesFeed()
+    fun loadFixtures(idLeague : String){
+        fixtures = repo.fetchNextFixturesFeed(idLeague)
     }
 }

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/navigation_prev_match"
-        android:icon="@drawable/ic_skip_previous_black_24dp"
-        android:title="@string/menu_prev_match" />
+        android:id="@+id/navigation_fixtures"
+        android:icon="@drawable/ic_play_arrow_24dp"
+        android:title="@string/menu_fixtures" />
 
     <item
-        android:id="@+id/navigation_next_match"
-        android:icon="@drawable/ic_play_arrow_24dp"
-        android:title="@string/menu_next_match" />
+        android:id="@+id/navigation_teams"
+        android:icon="@drawable/ic_player_black_24dp"
+        android:title="@string/menu_teams" />
 
     <item
         android:id="@+id/navigation_favorites"

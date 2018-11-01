@@ -12,18 +12,18 @@ class PrevFixturesFragmentViewModel : ViewModel(){
     private val repo = FixtureRepository()
 
 
-    fun getFixtureFeed(): LiveData<FixtureFeed>{
+    fun getFixtureFeed(idLeague : String): LiveData<FixtureFeed>{
         if (!::fixtures.isInitialized) {
-            loadFixtures()
+            loadFixtures(idLeague)
         }
         return fixtures
     }
 
-    fun loadFixtures(){
-        fixtures = repo.fetchFixturesFeed()
+    fun loadFixtures(idLeague : String){
+        fixtures = repo.fetchFixturesFeed(idLeague)
     }
 
-    fun getFixtures(): LiveData<FixtureFeed>{
+    fun getFixtures(idLeague : String): LiveData<FixtureFeed>{
         return fixtures
     }
 }
