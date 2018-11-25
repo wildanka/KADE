@@ -43,7 +43,8 @@ class RVFavoriteAdapter(private val mContext: Context) : RecyclerView.Adapter<RV
         val tvAwayClub = itemView.findViewById<TextView>(R.id.tv_away_club)
         val tvHomeClubScore = itemView.findViewById<TextView>(R.id.tv_home_club_score)
         val tvAwayClubScore = itemView.findViewById<TextView>(R.id.tv_away_club_score)
-        val tvMatchTime = itemView.findViewById<TextView>(R.id.match_time)
+        val tvMatchTime = itemView.findViewById<TextView>(R.id.tv_match_hours)
+        val tvMatchDate= itemView.findViewById<TextView>(R.id.tv_match_date)
         val cardViewListMatch = itemView.findViewById<CardView>(R.id.cv_recycler_item)
 
         fun bind(fixture : Favorite){

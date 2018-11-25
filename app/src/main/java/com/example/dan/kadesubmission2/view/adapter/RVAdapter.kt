@@ -10,7 +10,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.example.dan.kadesubmission2.R
 import com.example.dan.kadesubmission2.model.entity.FixtureList
+import com.example.dan.kadesubmission2.util.DateTimeConverter
 import com.example.dan.kadesubmission2.view.DetailFixturesActivity
+import java.util.*
 
 class RVAdapter(private val mContext: Context) : RecyclerView.Adapter<RVAdapter.RVHolder>(){
     val inflater : LayoutInflater
@@ -57,7 +59,8 @@ class RVAdapter(private val mContext: Context) : RecyclerView.Adapter<RVAdapter.
         val tvAwayClub = itemView.findViewById<TextView>(R.id.tv_away_club)
         val tvHomeClubScore = itemView.findViewById<TextView>(R.id.tv_home_club_score)
         val tvAwayClubScore = itemView.findViewById<TextView>(R.id.tv_away_club_score)
-        val tvMatchTime = itemView.findViewById<TextView>(R.id.match_time)
+        val tvMatchTime = itemView.findViewById<TextView>(R.id.tv_match_hours)
+        val tvMatchDate= itemView.findViewById<TextView>(R.id.tv_match_date)
         val cardViewListMatch = itemView.findViewById<CardView>(R.id.cv_recycler_item)
 
         fun bind(fixture : FixtureList){
@@ -65,7 +68,12 @@ class RVAdapter(private val mContext: Context) : RecyclerView.Adapter<RVAdapter.
             tvAwayClub.text = fixture.awayClub
             tvHomeClubScore.text = fixture.homeClubScore
             tvAwayClubScore.text = fixture.awayClubScore
-            tvMatchTime.text = fixture.date
+            //convert heula
+            var strDate  = DateTimeConverter.toGMTFormat(fixture.strDate!!,fixture.timeEvent!!)
+            val cal : Calendar = Calendar.getInstance()
+            cal.time = strDate
+            tvMatchDate.text = "${DateTimeConverter.dayConverter(strDate!!.day)}, ${strDate!!.date.toString()} ${DateTimeConverter.monthConverter(cal.get(Calendar.MONTH))} ${cal.get(Calendar.YEAR)}"
+            tvMatchTime.text = cal.get(Calendar.HOUR_OF_DAY).toString()+":"+cal.get(Calendar.MINUTE).toString()+" WIB"
             itemView.setOnClickListener{
                 mContext.startActivity(Intent(mContext,DetailFixturesActivity::class.java)
                         .putExtra("ID_CLUB_HOME",fixture.idHomeTeam)

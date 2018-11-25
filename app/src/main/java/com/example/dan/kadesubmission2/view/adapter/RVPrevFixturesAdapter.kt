@@ -12,6 +12,7 @@ import com.example.dan.kadesubmission2.R
 import com.example.dan.kadesubmission2.model.entity.FixtureList
 import com.example.dan.kadesubmission2.util.DateTimeConverter
 import com.example.dan.kadesubmission2.view.DetailFixturesActivity
+import java.util.*
 
 class RVPrevFixturesAdapter(private val mContext: Context) : RecyclerView.Adapter<RVPrevFixturesAdapter.RVHolder>(){
     val inflater : LayoutInflater
@@ -67,17 +68,18 @@ class RVPrevFixturesAdapter(private val mContext: Context) : RecyclerView.Adapte
             tvAwayClub.text = fixture.awayClub
             tvHomeClubScore.text = fixture.homeClubScore
             tvAwayClubScore.text = fixture.awayClubScore
-            tvMatchDate.text = DateTimeConverter.rawStringToDateConverter(fixture.date!!)
-            var jam= DateTimeConverter.tambahGMT(fixture.timeEvent!!.substring(0,2))
-            var menit= fixture.timeEvent!!.substring(3,5)
-            tvMatchTime.text = "$jam:$menit WIB"
+            //convert heula
+            var strDate  = DateTimeConverter.toGMTFormat(fixture.strDate!!,fixture.timeEvent!!)
+            val cal : Calendar = Calendar.getInstance()
+            cal.time = strDate
+            tvMatchDate.text = "${DateTimeConverter.dayConverter(strDate!!.day)}, ${strDate!!.date.toString()} ${DateTimeConverter.monthConverter(cal.get(Calendar.MONTH))} ${cal.get(Calendar.YEAR)}"
+            tvMatchTime.text = DateTimeConverter.toDoubleDigit(cal.get(Calendar.HOUR_OF_DAY).toString())+":"+DateTimeConverter.toDoubleDigit(cal.get(Calendar.MINUTE).toString())+" WIB"
             itemView.setOnClickListener{
                 mContext.startActivity(Intent(mContext,DetailFixturesActivity::class.java)
                         .putExtra("ID_CLUB_HOME",fixture.idHomeTeam)
                         .putExtra("ID_CLUB_AWAY",fixture.idAwayTeam)
                         .putExtra("ID_EVENT",fixture.idEvent)
                 )
-
             }
         }
     }

@@ -35,7 +35,11 @@ open class FixtureList(s: String, s1: String, s2: String, s3: String, s4: String
 
     @SerializedName("dateEvent")
     @Expose
-    var date: String? = null
+    var dateEvent: String? = null
+
+    @SerializedName("strDate")
+    @Expose
+    var strDate: String? = null
 
     @SerializedName("strTime")
     @Expose

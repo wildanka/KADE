@@ -5,27 +5,48 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object DateTimeConverter {
-    fun rawStringToDateConverter(inputString : String): String{
-        var inputFormat : DateFormat = SimpleDateFormat("yyyy-mm-dd")
-        var outputFormat : DateFormat = SimpleDateFormat("EEE, dd MMM yyyy")
-        var date : Date = inputFormat.parse(inputString)
-        var outputStr : String = outputFormat.format(date)
-
-//        var formatTanggal = LocalDate.parse(inputString, DateTimeFormatter.ofPattern("EEE, dd MMM yyy", Locale.getDefault()))
-//        val formatter = DateTimeFormatter.ofPattern("yyyy-mm-d",Locale)
-
-//        println(formatTanggal.toString())
-        println("TANGGAL CONVERT"+outputStr)
-        return outputStr
+    fun dayConverter(dayInt : Int) : String?{
+        when (dayInt) {
+            0 -> return "Sun"
+            1 -> return "Mon"
+            2 -> return "Tue"
+            3 -> return "Wed"
+            4 -> return "Thu"
+            5 -> return "Fri"
+            6 -> return "Sat"
+        }
+        return "what?"
     }
 
-//    fun date
+    fun monthConverter(monthInt : Int) : String?{
+        when (monthInt) {
+            0 -> return "Jan"
+            1 -> return "Feb"
+            2 -> return "Mar"
+            3 -> return "Apr"
+            4 -> return "May"
+            5 -> return "Jun"
+            6 -> return "Jul"
+            7 -> return "Aug"
+            8 -> return "Sep"
+            9 -> return "Oct"
+            10 -> return "Nov"
+            11 -> return "Dec"
+        }
+        return "what?"
+    }
 
-    fun tambahGMT(inputString: String):String{
-        var gmtPlus7 = inputString.toInt() + 7
-        println("sementara $gmtPlus7")
-        if (gmtPlus7 >= 24) gmtPlus7 -= 24
-        println("setelahnya :  $gmtPlus7")
-        return gmtPlus7.toString()
+    fun toGMTFormat(date: String, time: String): Date? {
+        val formatter = SimpleDateFormat("dd/MM/yy HH:mm:ss")
+        formatter.timeZone = TimeZone.getTimeZone("UTC")
+        val dateTime = "$date $time"
+        return formatter.parse(dateTime)
+    }
+
+    fun toDoubleDigit(angka : String) :String{
+        if (angka.length==1){
+            return "0$angka"
+        }
+        return angka
     }
 }

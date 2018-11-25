@@ -64,10 +64,12 @@ class RVNextFixturesAdapter(private val mContext: Context) : RecyclerView.Adapte
             tvAwayClub.text = fixture.awayClub
             tvHomeClubScore.text = fixture.homeClubScore
             tvAwayClubScore.text = fixture.awayClubScore
-            tvMatchDate.text = DateTimeConverter.rawStringToDateConverter(fixture.date!!)
-            var jam= DateTimeConverter.tambahGMT(fixture.timeEvent!!.substring(0,2))
-            var menit= fixture.timeEvent!!.substring(3,5)
-            tvMatchTime.text = "$jam:$menit WIB"
+            //convert heula
+            var strDate  = DateTimeConverter.toGMTFormat(fixture.strDate!!,fixture.timeEvent!!)
+            val cal : Calendar = Calendar.getInstance()
+            cal.time = strDate
+            tvMatchDate.text = "${DateTimeConverter.dayConverter(strDate!!.day)}, ${strDate!!.date.toString()} ${DateTimeConverter.monthConverter(cal.get(Calendar.MONTH))} ${cal.get(Calendar.YEAR)}"
+            tvMatchTime.text = DateTimeConverter.toDoubleDigit(cal.get(Calendar.HOUR_OF_DAY).toString())+":"+DateTimeConverter.toDoubleDigit(cal.get(Calendar.MINUTE).toString())+" WIB"
             itemView.setOnClickListener{
                 mContext.startActivity(Intent(mContext,DetailFixturesActivity::class.java)
                         .putExtra("ID_CLUB_HOME",fixture.idHomeTeam)
@@ -76,17 +78,10 @@ class RVNextFixturesAdapter(private val mContext: Context) : RecyclerView.Adapte
                 )
             }
 
-
-            //untuk penambahan ke kalender
-            var tahun = fixture.date!!.substring(0,4)
-            var bulan = fixture.date!!.substring(5,7)
-            var tanggal = fixture.date!!.substring(8,10)
-            println("$tahun bulan : $bulan, tanggal : $tanggal | Jam : $jam, menit : $menit ")
-
+            //region untuk penambahan ke kalender
             var fixtureCalendarBegin : Calendar = Calendar.getInstance()
-            var fixtureCalendarEnd : Calendar = Calendar.getInstance()
-            fixtureCalendarBegin.set(tahun.toInt(),bulan.toInt(),tanggal.toInt(),jam.toInt(),menit.toInt())
-//            fixtureCalendarEnd.set(tahun.toInt(),bulan.toInt(),tanggal.toInt(),jam.toInt()+1,menit.toInt())
+            fixtureCalendarBegin.time = strDate
+            fixtureCalendarBegin.set(fixtureCalendarBegin.get(Calendar.YEAR),fixtureCalendarBegin.get(Calendar.MONTH),fixtureCalendarBegin.get(Calendar.DATE),fixtureCalendarBegin.get(Calendar.HOUR),fixtureCalendarBegin.get(Calendar.MINUTE))
             ibAddToReminder.setOnClickListener{
                 val intent = Intent(Intent.ACTION_INSERT)
                         .setData(CONTENT_URI)
@@ -94,6 +89,7 @@ class RVNextFixturesAdapter(private val mContext: Context) : RecyclerView.Adapte
                         .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, fixtureCalendarBegin.timeInMillis)
                 mContext.startActivity(intent)
             }
+            //region untuk penambahan ke kalender
         }
     }
 

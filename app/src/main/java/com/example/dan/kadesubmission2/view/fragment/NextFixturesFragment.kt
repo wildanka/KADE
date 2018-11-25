@@ -102,8 +102,8 @@ class NextFixturesFragment : Fragment(){
                 binding!!.progressBar.visibility = View.VISIBLE
                 favoritesAdapter.setupListFixture(fixtureFeed.fixtures!!)
                 binding!!.progressBar.visibility = View.GONE
-                Log.d(TAG, fixtureFeed.fixtures!!.get(0).date)
-                println("VIEW : "+fixtureFeed.fixtures!![0].date)
+                Log.d(TAG, fixtureFeed.fixtures!!.get(0).dateEvent)
+                println("VIEW : "+fixtureFeed.fixtures!![0].dateEvent)
             }
         })
     }
