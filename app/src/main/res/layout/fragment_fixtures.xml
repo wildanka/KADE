@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.design.widget.CoordinatorLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -34,7 +34,17 @@
                 app:tabTextColor="@color/colorUnselected" />
         </android.support.design.widget.AppBarLayout>
 
+        <FrameLayout
+            android:id="@+id/fl_search_result"
+            android:layout_width="match_parent"
+            android:layout_height="464dp"
+            android:layout_below="@+id/abl_ff">
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_search_match"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
         <android.support.v4.view.ViewPager
             android:id="@+id/vp_fragment_fixtures"
             android:layout_width="match_parent"
@@ -43,5 +53,5 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
-    </android.support.design.widget.CoordinatorLayout>
+    </RelativeLayout>
 </layout>

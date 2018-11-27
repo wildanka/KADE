@@ -23,12 +23,17 @@ import android.support.v4.view.MenuItemCompat.getActionView
 import android.content.Context.SEARCH_SERVICE
 import android.app.SearchManager
 import android.content.Context
+import android.databinding.adapters.ViewGroupBindingAdapter.setListener
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
 import android.widget.*
+import com.example.dan.kadesubmission2.view.MainActivity
 
 
 class PrevFixturesFragment : Fragment(){
+    lateinit var viewModel : PrevFixturesFragmentViewModel
+    lateinit var adapter : RVPrevFixturesAdapter
+
     private val TAG = "Fragment PREV FIXTURES"
     var binding: FragmentListMatchBinding? = null
     var SELECTED_ID_LEAGUE = ""
@@ -62,6 +67,13 @@ class PrevFixturesFragment : Fragment(){
         }
     }*/
 
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        viewModel = ViewModelProviders.of(this).get(PrevFixturesFragmentViewModel::class.java)
+        adapter = RVPrevFixturesAdapter(activity!!)
+        super.onActivityCreated(savedInstanceState)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list_match, container, false)
 
@@ -69,10 +81,10 @@ class PrevFixturesFragment : Fragment(){
         /*val rootView : View = inflater.inflate(R.layout.fragment_list_match,container,false)
         val rvListMatch = rootView.findViewById<RecyclerView>(R.id.rv_list_match)
         val swipeRefreshListMatch= rootView.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_list_match)*/
-        val viewModel = ViewModelProviders.of(this).get(PrevFixturesFragmentViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(PrevFixturesFragmentViewModel::class.java)
 
         binding!!.rvListMatch.layoutManager = LinearLayoutManager(activity!!, LinearLayout.VERTICAL, false)
-        val adapter = RVPrevFixturesAdapter(activity!!)
+        adapter = RVPrevFixturesAdapter(activity!!)
         binding!!.rvListMatch.adapter = adapter
 
         //initial load
@@ -94,6 +106,7 @@ class PrevFixturesFragment : Fragment(){
             }
 
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+
                 Toast.makeText(activity, "You has selected " + LEAGUE_NAME[p2] + " with id " + LEAGUE_ID[p2], Toast.LENGTH_SHORT).show()
                 SELECTED_ID_LEAGUE = LEAGUE_ID[p2]
                 viewModel.loadFixtures(SELECTED_ID_LEAGUE)
@@ -103,7 +116,6 @@ class PrevFixturesFragment : Fragment(){
         return binding!!.root
     }
 
-
     private fun observeDataFeed(viewModel: PrevFixturesFragmentViewModel, favoritesAdapter: RVPrevFixturesAdapter, idLeague: String) {
         viewModel.getFixtureFeed(idLeague).observe(this, Observer<FixtureFeed> { fixtureFeed ->
             if (fixtureFeed != null) {
@@ -111,10 +123,9 @@ class PrevFixturesFragment : Fragment(){
                 favoritesAdapter.setupListFixture(fixtureFeed.fixtures!!)
                 binding!!.progressBar.visibility = View.GONE
                 Log.d(TAG, fixtureFeed.fixtures!!.get(0).dateEvent)
-                println("VIEW : "+fixtureFeed.fixtures!![0].dateEvent)
+                println("VIEW : "+fixtureFeed.fixtures!![0].dateEvent+" ||| "+fixtureFeed.fixtures!![0].timeEvent)
             }
         })
     }
-
 
 }

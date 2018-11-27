@@ -26,6 +26,9 @@ interface ApiInterface{
     @GET("users/{username}")
     fun getUser(@Path("username") username: String): Call<ResponseBody>
 
+    @GET("/api/v1/json/1/searchevents.php")
+    fun getSearchEvents(@Query("e") events: String): Call<SearchEventFeeds>
+
     @GET("/api/v1/json/1/eventspastleague.php")
     fun getPastEvents(@Query("id") idLeague: String): Call<FixtureFeed>
 

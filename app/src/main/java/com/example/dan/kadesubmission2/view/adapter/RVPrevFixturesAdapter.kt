@@ -69,7 +69,7 @@ class RVPrevFixturesAdapter(private val mContext: Context) : RecyclerView.Adapte
             tvHomeClubScore.text = fixture.homeClubScore
             tvAwayClubScore.text = fixture.awayClubScore
             //convert heula
-            var strDate  = DateTimeConverter.toGMTFormat(fixture.strDate!!,fixture.timeEvent!!)
+            val strDate  = DateTimeConverter.toGMTFormat(fixture.strDate!!,fixture.timeEvent!!)
             val cal : Calendar = Calendar.getInstance()
             cal.time = strDate
             tvMatchDate.text = "${DateTimeConverter.dayConverter(strDate!!.day)}, ${strDate!!.date.toString()} ${DateTimeConverter.monthConverter(cal.get(Calendar.MONTH))} ${cal.get(Calendar.YEAR)}"

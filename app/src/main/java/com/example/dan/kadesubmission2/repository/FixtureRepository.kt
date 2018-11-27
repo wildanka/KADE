@@ -4,15 +4,14 @@ import android.annotation.SuppressLint
 import android.arch.lifecycle.MutableLiveData
 import android.util.Log
 import com.example.dan.kadesubmission2.model.ServiceGenerator
-import com.example.dan.kadesubmission2.model.entity.FixtureDetailsFeed
-import com.example.dan.kadesubmission2.model.entity.FixtureFeed
-import com.example.dan.kadesubmission2.model.entity.TeamLogoFeed
+import com.example.dan.kadesubmission2.model.entity.*
 import com.example.dan.kadesubmission2.model.networkLayer.ApiInterface
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class FixtureRepository() {
@@ -27,7 +26,6 @@ class FixtureRepository() {
     }
 
     fun fetchFixturesFeed(idLeague : String): MutableLiveData<FixtureFeed>{
-//         val call = placeHolderApi.getPastEvents()
         val fixturesLiveData : MutableLiveData<FixtureFeed> = MutableLiveData()
         ServiceGenerator
                 .createServices(ApiInterface::class.java)
@@ -45,6 +43,34 @@ class FixtureRepository() {
                         fixturesLiveData.value = null
                     }
 
+        } )
+        return fixturesLiveData
+    }
+
+    fun fetchSearchFixturesFeed(events : String): MutableLiveData<SearchEventFeeds>{
+        val fixturesLiveData : MutableLiveData<SearchEventFeeds> = MutableLiveData()
+        val fixtures : MutableLiveData<List<FixtureList>> = MutableLiveData()
+        ServiceGenerator
+                .createServices(ApiInterface::class.java)
+                .getSearchEvents(events)
+                .enqueue(object: Callback<SearchEventFeeds> {
+                    override fun onResponse(call: Call<SearchEventFeeds>, response: Response<SearchEventFeeds>) {
+                        Log.d(TAG,"onResponse BID : Server Response"+response.toString())
+                        if (response.body() != null){
+                            Log.d(TAG,"onResponse BID : Received Info"+response.body().toString())
+                            fixturesLiveData.value = response.body()
+                            fixtures.value = fixturesLiveData.value?.fixtures
+
+                            Log.d(TAG, fixtures.value?.get(0)?.homeClub)
+//                            println("HASIL REPO"+fixturesLiveData.value?.fixtures!![0].homeClub)
+                        }
+
+                    }
+
+                    override fun onFailure(call: Call<SearchEventFeeds>, t: Throwable) {
+                        println("Failed to POST Message: ${ t?.message }")
+                        fixturesLiveData.value = null
+                    }
         } )
         return fixturesLiveData
     }

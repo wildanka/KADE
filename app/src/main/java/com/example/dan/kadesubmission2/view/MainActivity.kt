@@ -1,12 +1,16 @@
 package com.example.dan.kadesubmission2.view
 
 import android.databinding.DataBindingUtil
+import android.databinding.adapters.ViewGroupBindingAdapter.setListener
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
+import android.widget.Toast
 import com.example.dan.kadesubmission2.R
 import com.example.dan.kadesubmission2.databinding.ActivityMainBinding
 import com.example.dan.kadesubmission2.view.fragment.*
@@ -16,6 +20,11 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
     private val TAG = "Fragment PREV FIXTURES"
     var binding : ActivityMainBinding? = null
+
+
+//    fun setSearchViewListener(mSearchViewListener: SearchViewListener){
+//        this.mSearchViewListener = mSearchViewListener
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -44,36 +53,45 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_search,menu)
-        val searchItem = menu.findItem(R.id.action_search)
-        if(searchItem != null){
-            val searchView = searchItem.actionView as SearchView
-            val editext = searchView.findViewById<EditText>(android.support.v7.appcompat.R.id.search_src_text)
-            editext.hint = "Search here..."
-
-            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    return true
-                }
-
-                override fun onQueryTextChange(newText: String?): Boolean {
-//                    displayList.clear()
+//        menuInflater.inflate(R.menu.menu_search,menu)
+//        val searchItem = menu.findItem(R.id.action_search)
+//        if(searchItem != null){
+//            val searchView = searchItem.actionView as SearchView
+//            val editext = searchView.findViewById<EditText>(android.support.v7.appcompat.R.id.search_src_text)
+//            editext.hint = "Search here..."
+//
+//            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+//                override fun onQueryTextSubmit(query: String?): Boolean {
+//                    if(query!!.isNotEmpty()){
+//                        val search = query.toLowerCase()
+//                        mSearchViewListener.myAction(search)
+//                        Log.d("TAG",search)
+//                        Toast.makeText(applicationContext,search,Toast.LENGTH_SHORT).show()
+//
+//                    }else{
+//                        Toast.makeText(applicationContext,"kosong",Toast.LENGTH_SHORT).show()
+////                        displayList.addAll(countries)
+//                    }
+//                    return true
+//                }
+//
+//                override fun onQueryTextChange(newText: String?): Boolean {
+////                    displayList.clear()
 //                    if(newText!!.isNotEmpty()){
 //                        val search = newText.toLowerCase()
-//                        countries.forEach {
-//                            if(it.toLowerCase().contains(search)){
-//                                displayList.add(it)
-//                            }
-//                        }
+////                        mSearchViewListener.myAction(search)
+//                        Log.d("TAG",search)
+//                        Toast.makeText(applicationContext,search,Toast.LENGTH_SHORT).show()
 //                    }else{
-//                        displayList.addAll(countries)
+//                        Toast.makeText(applicationContext,"kosong",Toast.LENGTH_SHORT).show()
+////                        displayList.addAll(countries)
 //                    }
-//                    country_list.adapter.notifyDataSetChanged()
-                    return true
-                }
-
-            })
-        }
+////                    country_list.adapter.notifyDataSetChanged()
+//                    return true
+//                }
+//
+//            })
+//        }
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -90,6 +108,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadPrevFragment(savedInstanceState: Bundle?){
         if (savedInstanceState == null) {
+
             supportFragmentManager
                     .beginTransaction()
                     .setCustomAnimations(R.anim.design_bottom_sheet_slide_in,R.anim.design_bottom_sheet_slide_out)

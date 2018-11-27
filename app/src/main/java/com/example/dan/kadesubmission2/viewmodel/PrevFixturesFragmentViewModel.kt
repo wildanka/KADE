@@ -23,7 +23,4 @@ class PrevFixturesFragmentViewModel : ViewModel(){
         fixtures = repo.fetchFixturesFeed(idLeague)
     }
 
-    fun getFixtures(idLeague : String): LiveData<FixtureFeed>{
-        return fixtures
-    }
 }
