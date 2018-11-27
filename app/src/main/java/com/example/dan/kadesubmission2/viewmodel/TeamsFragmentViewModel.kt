@@ -9,6 +9,7 @@ import com.example.dan.kadesubmission2.repository.TeamRepository
 
 class TeamsFragmentViewModel: ViewModel(){
     private lateinit var teams : MutableLiveData<TeamLogoFeed>
+    private lateinit var teamsSearch : MutableLiveData<TeamLogoFeed>
 
     private val repo = TeamRepository()
 
@@ -21,6 +22,17 @@ class TeamsFragmentViewModel: ViewModel(){
     fun loadTeams(idLeague : String){
         println("viewmodel load from repo terpelatuk")
         teams = repo.fetchLeagueTeams(idLeague)
+    }
+
+    fun getSearchResultTeams(clubName: String): LiveData<TeamLogoFeed>{
+        println("terpelatuk")
+        if(!::teamsSearch.isInitialized) searchTeams(clubName)
+        return teamsSearch
+    }
+
+    fun searchTeams(clubName : String){
+        println("viewmodel load from repo terpelatuk")
+        teamsSearch = repo.fetchSearchTeams(clubName)
     }
 
 

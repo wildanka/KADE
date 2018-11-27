@@ -14,7 +14,7 @@ import com.example.dan.kadesubmission2.util.DateTimeConverter
 import com.example.dan.kadesubmission2.view.DetailFixturesActivity
 import java.util.*
 
-class RVPrevFixturesAdapter(private val mContext: Context) : RecyclerView.Adapter<RVPrevFixturesAdapter.RVHolder>(){
+class RVSearchFixturesAdapter(private val mContext: Context) : RecyclerView.Adapter<RVSearchFixturesAdapter.RVHolder>(){
     val inflater : LayoutInflater
     var listFixture : List<FixtureList> = mutableListOf()
 
@@ -30,7 +30,7 @@ class RVPrevFixturesAdapter(private val mContext: Context) : RecyclerView.Adapte
         return listFixture.size
     }
 
-    fun setupListFixture(fixtures : MutableList<FixtureList>){
+    fun setupListFixture(fixtures : List<FixtureList>){
         this.listFixture = fixtures
         notifyDataSetChanged()
     }
@@ -54,19 +54,60 @@ class RVPrevFixturesAdapter(private val mContext: Context) : RecyclerView.Adapte
             tvHomeClubScore.text = fixture.homeClubScore
             tvAwayClubScore.text = fixture.awayClubScore
             //convert heula
-            println("RVPrevFixtures : ${fixture.strDate}")
-            println("RVPrevFixtures : ${fixture.timeEvent}")
-//            val strDate  = DateTimeConverter.toGMTFormat(fixture.strDate!!,fixture.timeEvent!!)
-            if (fixture.strDate != null) {
+            println("RVSearchFixtures : ${fixture.strDate}")
+            println("RVSearchFixtures : ${fixture.dateEvent}")
+            println("RVSearchFixtures : ${fixture.timeEvent}")
+
+            //jika strDate not null
+            if (fixture.strDate != null && fixture.timeEvent != null) {
                 val strDate  = DateTimeConverter.toGMTFormat(fixture.strDate!!,fixture.timeEvent!!)
                 val cal : Calendar = Calendar.getInstance()
                 cal.time = strDate
                 tvMatchDate.text = "${DateTimeConverter.dayConverter(strDate!!.day)}, ${strDate!!.date.toString()} ${DateTimeConverter.monthConverter(cal.get(Calendar.MONTH))} ${cal.get(Calendar.YEAR)}"
                 tvMatchTime.text = DateTimeConverter.toDoubleDigit(cal.get(Calendar.HOUR_OF_DAY).toString())+":"+DateTimeConverter.toDoubleDigit(cal.get(Calendar.MINUTE).toString())+" WIB"
-            }else{
+            }else {
+                if (fixture.strDate == null) {
+                    if (fixture.dateEvent == null) {
+                        //jika strDate & dateEvent null tampilkan '-'
+                        tvMatchDate.text = "-"
+                    }else{
+                        //jika strDate saja yang null tampilkan dateEvent
+                        tvMatchDate.text = fixture.dateEvent
+                    }
+                }
+
+                //jika timeEvent null
+                if (fixture.timeEvent == null){
+                    tvMatchTime.text = "-"
+                }else{
+                    //jika timEvent tidak null
+                    tvMatchTime.text = fixture.timeEvent
+                }
                 tvMatchDate.text = fixture.dateEvent
-                tvMatchTime.text = ""
             }
+
+            //jika timeEvent not null
+            if (fixture.timeEvent != null) {
+                val strDate  = DateTimeConverter.toGMTFormat("03/11/18",fixture.timeEvent!!)
+                val cal : Calendar = Calendar.getInstance()
+                cal.time = strDate
+                tvMatchTime.text = DateTimeConverter.toDoubleDigit(cal.get(Calendar.HOUR_OF_DAY).toString())+":"+DateTimeConverter.toDoubleDigit(cal.get(Calendar.MINUTE).toString())+" WIB"
+            }else{
+                tvMatchTime.text = "-"
+            }
+
+            if (fixture.dateEvent != null && fixture.timeEvent != null){ //jika dateEvent dan timeEvent not null, manfaatkan dateEvent
+                val strYear = fixture.dateEvent!!.substring(2,4)
+                val strM = fixture.dateEvent!!.substring(5,7)
+                val strDay = fixture.dateEvent!!.substring(8,10)
+                println("HASIL SEARCH $strYear / $strM / $strDay")
+                val strDate  = DateTimeConverter.toGMTFormat("$strDay/$strM/$strYear",fixture.timeEvent!!)
+                val cal : Calendar = Calendar.getInstance()
+                cal.time = strDate
+                tvMatchDate.text = "${DateTimeConverter.dayConverter(strDate!!.day)}, ${strDate!!.date.toString()} ${DateTimeConverter.monthConverter(cal.get(Calendar.MONTH))} ${cal.get(Calendar.YEAR)}"
+                tvMatchTime.text = DateTimeConverter.toDoubleDigit(cal.get(Calendar.HOUR_OF_DAY).toString())+":"+DateTimeConverter.toDoubleDigit(cal.get(Calendar.MINUTE).toString())+" WIB"
+            }
+
             itemView.setOnClickListener{
                 mContext.startActivity(Intent(mContext,DetailFixturesActivity::class.java)
                         .putExtra("ID_CLUB_HOME",fixture.idHomeTeam)

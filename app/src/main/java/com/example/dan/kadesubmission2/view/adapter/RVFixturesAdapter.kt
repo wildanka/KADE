@@ -10,7 +10,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.example.dan.kadesubmission2.R
 import com.example.dan.kadesubmission2.model.entity.Favorite
+import com.example.dan.kadesubmission2.util.DateTimeConverter
 import com.example.dan.kadesubmission2.view.DetailFixturesActivity
+import java.util.*
 
 class RVFixturesAdapter(private val mContext: Context) : RecyclerView.Adapter<RVFixturesAdapter.RVHolder>(){
     val inflater : LayoutInflater
@@ -43,6 +45,7 @@ class RVFixturesAdapter(private val mContext: Context) : RecyclerView.Adapter<RV
         val tvHomeClubScore = itemView.findViewById<TextView>(R.id.tv_home_club_score)
         val tvAwayClubScore = itemView.findViewById<TextView>(R.id.tv_away_club_score)
         val tvMatchDate= itemView.findViewById<TextView>(R.id.tv_match_date)
+
         val tvMatchHour = itemView.findViewById<TextView>(R.id.tv_match_hours)
         val cardViewListMatch = itemView.findViewById<CardView>(R.id.cv_recycler_item)
 
@@ -62,7 +65,12 @@ class RVFixturesAdapter(private val mContext: Context) : RecyclerView.Adapter<RV
                     tvAwayClubScore.text = fixture.awayScore
                 }
 
+                //convert heula
+//                val strDate  = DateTimeConverter.toGMTFormat(fixture.eventDate!!,fixture.)
+//                val cal : Calendar = Calendar.getInstance()
+//                cal.time = strDate
                 tvMatchDate.text = fixture.eventDate
+//                tvMatchHour.text = fixture.eventDate
                 itemView.setOnClickListener{
                     mContext.startActivity(Intent(mContext,DetailFixturesActivity::class.java)
                             .putExtra("ID_CLUB_HOME",fixture.homeID)

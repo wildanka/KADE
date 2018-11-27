@@ -20,6 +20,8 @@ import kotlinx.android.synthetic.main.fragment_list_match.*
 
 class TeamsFragment : Fragment() {
     private val TAG = "Fragment Teams"
+    lateinit var viewModel : TeamsFragmentViewModel
+    lateinit var adapterSearch : RVTeamsAdapter
     var binding: FragmentTeamsBinding? = null
     var SELECTED_ID_LEAGUE = ""
     val LEAGUE_ID = arrayOf(
@@ -41,18 +43,28 @@ class TeamsFragment : Fragment() {
             "Netherlands Eredivisie"
     ) //string array
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val viewModel = ViewModelProviders.of(this).get(TeamsFragmentViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(TeamsFragmentViewModel::class.java)
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_teams,container,false)
         binding!!.contentFragTeams!!.rvListTeams.layoutManager = LinearLayoutManager(activity!!, LinearLayout.VERTICAL,false)
+        binding!!.contentFragTeams!!.rvSearchTeams.layoutManager = LinearLayoutManager(activity!!, LinearLayout.VERTICAL,false)
+
         //setSupportActionBar
         if(activity is AppCompatActivity){
             (activity as AppCompatActivity).setSupportActionBar(binding!!.tbTeams)
         }
         val adapter = RVTeamsAdapter(activity!!)
+        adapterSearch = RVTeamsAdapter(activity!!)
         binding!!.contentFragTeams!!.rvListTeams.adapter = adapter
+        binding!!.contentFragTeams!!.rvSearchTeams.adapter = adapterSearch
 
         observeDataFeed(viewModel, adapter, "4328")
+        //region spinner
         //adapter for spinner
         binding!!.contentFragTeams!!.spnLastFixtures.adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_dropdown_item , LEAGUE_NAME)
 
@@ -69,6 +81,7 @@ class TeamsFragment : Fragment() {
                 observeDataFeed(viewModel,adapter,SELECTED_ID_LEAGUE)
             }
         }
+        //endregion spinner
 
         println(TAG)
         return binding!!.root
@@ -88,62 +101,65 @@ class TeamsFragment : Fragment() {
         })
     }
 
+    private fun observeSearchResult(clubName: String){
+        Log.d("NOT YET EXECUTED","Observe")
+        viewModel.searchTeams(clubName)
+        viewModel.getSearchResultTeams(clubName).observe(this, Observer<TeamLogoFeed>{ teamsFeed ->
+            if (teamsFeed != null) {
+                adapterSearch.setupListTeams(teamsFeed.teamLogos!!)
+                binding!!.contentFragTeams!!.progressBarTeams.visibility = View.GONE
+                Log.d(TAG, teamsFeed.teamLogos!![0].idTeam)
+                println("VIEW : "+teamsFeed.teamLogos!![0].teamName)
+                Log.d("EXECUTED","Observe")
+            }
+        })
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater!!.inflate(R.menu.menu_search,menu)
         val searchItem = menu!!.findItem(R.id.action_search)
         if(searchItem != null){
-            val searchView = searchItem.actionView as SearchView
+            val searchView = searchItem.actionView as android.support.v7.widget.SearchView
             val editext = searchView.findViewById<EditText>(android.support.v7.appcompat.R.id.search_src_text)
-            editext.hint = "Search Clubs..."
+            editext.hint = "Search Team Name..."
 
-            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            searchView.setOnQueryTextListener(object : android.support.v7.widget.SearchView.OnQueryTextListener{
                 override fun onQueryTextSubmit(query: String?): Boolean {
+//                     mSearchViewListener.myAction(query!!)
+                    //on
+                    binding!!.contentFragTeams!!.flSearchTeamResult.visibility = View.VISIBLE
+
+                    //off
+                    binding!!.contentFragTeams!!.spnLastFixtures.visibility = View.INVISIBLE
+                    binding!!.contentFragTeams!!.rvListTeams.visibility = View.INVISIBLE
+                    binding!!.contentFragTeams!!.swipeRefreshListTeams.visibility = View.INVISIBLE
+                    observeSearchResult(query!!)
                     return true
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
-               /*     displayList.clear()
-                    if(newText!!.isNotEmpty()){
+//                    /*displayList.clear()
+                    if (newText!!.isNotEmpty()) {
                         val search = newText.toLowerCase()
-                        countries.forEach {
-                            if(it.toLowerCase().contains(search)){
-                                displayList.add(it)
-                            }
-                        }
+//                        mSearchViewListener.myAction(search)
+                        Log.d("TAG", search)
                     }else{
-                        displayList.addAll(countries)
+                        Log.d("TAG", "kosong")
+                        //on
+                        binding!!.contentFragTeams!!.flSearchTeamResult.visibility = View.INVISIBLE
+
+                        //off
+                        binding!!.contentFragTeams!!.spnLastFixtures.visibility = View.VISIBLE
+                        binding!!.contentFragTeams!!.rvListTeams.visibility = View.VISIBLE
+                        binding!!.contentFragTeams!!.swipeRefreshListTeams.visibility = View.VISIBLE
+//                        displayList.addAll(countries)
                     }
-                    country_list.adapter.notifyDataSetChanged()*/
+//                    country_list.adapter.notifyDataSetChanged()*/
                     return true
                 }
 
             })
         }
         super.onCreateOptionsMenu(menu, inflater)
-    }
-
-
-    private fun setSpinnerLeague(viewModel: TeamsFragmentViewModel, teamsAdapter: RVTeamsAdapter){
-
-        //adapter for spinner
-        binding!!.contentFragTeams!!.spnLastFixtures.adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_dropdown_item , LEAGUE_NAME)
-
-        //item listener for spinner
-        binding!!.contentFragTeams!!.spnLastFixtures.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                Toast.makeText(activity, "You has selected "+LEAGUE_NAME[p2]+" with id "+LEAGUE_ID[p2],Toast.LENGTH_SHORT).show()
-                SELECTED_ID_LEAGUE = LEAGUE_ID[p2]
-                viewModel.loadTeams(SELECTED_ID_LEAGUE)
-//                observeDataFeed(viewModel,teamsAdapter,SELECTED_ID_LEAGUE)
-            }
-        }
-
-        Log.d("CEK_ID", SELECTED_ID_LEAGUE)
-        observeDataFeed(viewModel, teamsAdapter, SELECTED_ID_LEAGUE)
-
     }
 }

@@ -41,6 +41,9 @@ interface ApiInterface{
     @GET("/api/v1/json/1/lookupteam.php")
     fun getTeamBadge(@Query("id") idClub: String): Call<TeamLogoFeed>
 
+    @GET("/api/v1/json/1/searchteams.php")
+    fun getSearchTeams(@Query("t") clubName: String): Call<TeamLogoFeed>
+
     @GET("/api/v1/json/1/lookup_all_teams.php")
     fun getTeamInLeague(@Query("id") idLeague: String): Call<TeamLogoFeed>
 

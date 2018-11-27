@@ -21,6 +21,7 @@ import com.example.dan.kadesubmission2.model.entity.FixtureDetailsFeed
 import com.example.dan.kadesubmission2.model.entity.TeamLogoFeed
 import com.example.dan.kadesubmission2.model.localStorage.database
 import com.example.dan.kadesubmission2.repository.StorageRepository
+import com.example.dan.kadesubmission2.util.DateTimeConverter
 import com.example.dan.kadesubmission2.viewmodel.DetailsActivityViewModel
 import com.squareup.picasso.Picasso
 
@@ -30,6 +31,7 @@ import org.jetbrains.anko.db.classParser
 import org.jetbrains.anko.db.delete
 import org.jetbrains.anko.db.insert
 import org.jetbrains.anko.db.select
+import java.util.*
 
 class DetailFixturesActivity : AppCompatActivity() {
     private val TAG = "DetailFixturesActivity"
@@ -43,6 +45,7 @@ class DetailFixturesActivity : AppCompatActivity() {
     private lateinit var homeClubScore : String
     private lateinit var awayClubScore : String
     private lateinit var date : String
+    private lateinit var time : String
 
     private lateinit var repo: StorageRepository
     private lateinit var id: String
@@ -110,7 +113,8 @@ class DetailFixturesActivity : AppCompatActivity() {
                         Favorite.AWAY_TEAM to awayClub,
                         Favorite.HOME_SCORE to homeClubScore,
                         Favorite.AWAY_SCORE to awayClubScore,
-                        Favorite.EVENT_DATE to date)
+                        Favorite.EVENT_DATE to date,
+                        Favorite.EVENT_TIME to time)
             }
 //            println("BERHASIL INSERT HOREE")
             Snackbar.make(
@@ -208,7 +212,6 @@ class DetailFixturesActivity : AppCompatActivity() {
                 this.awayClub = eventDetails.fixtureDetails!![0].strAwayTeam.toString()
                 this.homeClubScore = eventDetails.fixtureDetails!![0].homeScoreDetail.toString()
                 this.awayClubScore = eventDetails.fixtureDetails!![0].awayScoreDetail.toString()
-                this.date = eventDetails.fixtureDetails!![0].dateEvent.toString()
 
                 println("EVENT DETAILS : "+ eventDetails.fixtureDetails!![0].strHomeTeam)
                 println("EVENT DETAILS : "+ eventDetails.fixtureDetails!![0].strAwayTeam)
@@ -233,7 +236,14 @@ class DetailFixturesActivity : AppCompatActivity() {
                 tv_away_forward.text = validateData(eventDetails.fixtureDetails!![0].awayForward)
                 tv_home_subs.text = validateData(eventDetails.fixtureDetails!![0].homeSubs)
                 tv_away_subs.text = validateData(eventDetails.fixtureDetails!![0].awaySubs)
-                tv_match_time_detail.text = validateData(eventDetails.fixtureDetails!![0].dateEvent)
+                //convert heula
+                val strDate  = DateTimeConverter.toGMTFormat(eventDetails.fixtureDetails!![0].strDate!!,eventDetails.fixtureDetails!![0].strTime!!)
+                val cal : Calendar = Calendar.getInstance()
+                cal.time = strDate
+                this.date = "${DateTimeConverter.dayConverter(strDate!!.day)}, ${strDate!!.date.toString()} ${DateTimeConverter.monthConverter(cal.get(Calendar.MONTH))} ${cal.get(Calendar.YEAR)}"
+                this.time = DateTimeConverter.toDoubleDigit(cal.get(Calendar.HOUR_OF_DAY).toString())+":"+DateTimeConverter.toDoubleDigit(cal.get(Calendar.MINUTE).toString())+" WIB"
+                tv_match_time_detail.text = this.date
+                tv_match_detail_kick_off.text = this.time
             }
         })
         progressBarDetail.visibility = View.GONE

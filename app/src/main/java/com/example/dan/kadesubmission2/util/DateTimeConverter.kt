@@ -36,8 +36,15 @@ object DateTimeConverter {
         return "what?"
     }
 
-    fun toGMTFormat(date: String, time: String): Date? {
+    fun toGMTFormat(date: String?, time: String): Date? {
         val formatter = SimpleDateFormat("dd/MM/yy HH:mm:ss")
+        formatter.timeZone = TimeZone.getTimeZone("UTC")
+        val dateTime = "$date $time"
+        return formatter.parse(dateTime)
+    }
+
+    fun toGMTFormatSearch(date: String?, time: String): Date? {
+        val formatter = SimpleDateFormat("dd/mm/yy HH:mm:ss")
         formatter.timeZone = TimeZone.getTimeZone("UTC")
         val dateTime = "$date $time"
         return formatter.parse(dateTime)

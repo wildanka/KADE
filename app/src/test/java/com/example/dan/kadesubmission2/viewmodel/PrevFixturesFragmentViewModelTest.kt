@@ -1,13 +1,8 @@
 package com.example.dan.kadesubmission2.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Observer
-import com.example.dan.kadesubmission2.model.entity.FixtureFeed
 import com.example.dan.kadesubmission2.model.entity.TeamLogo
-import com.example.dan.kadesubmission2.model.entity.TeamLogoFeed
 import com.example.dan.kadesubmission2.repository.FixtureRepository
-import com.example.dan.kadesubmission2.view.fragment.PrevFixturesFragment
-import com.google.gson.Gson
 import com.nhaarman.mockito_kotlin.atLeastOnce
 import junit.framework.Assert.assertEquals
 import org.junit.Before
@@ -16,11 +11,8 @@ import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import android.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.dan.kadesubmission2.model.entity.FixtureList
-import com.nhaarman.mockito_kotlin.mock
 import org.junit.rules.TestRule
 import org.junit.Rule
-import org.mockito.Mockito
 
 
 class PrevFixturesFragmentViewModelTest {

@@ -31,7 +31,8 @@ class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "Favorit
                 Favorite.AWAY_TEAM to TEXT,
                 Favorite.HOME_SCORE to TEXT,
                 Favorite.AWAY_SCORE to TEXT,
-                Favorite.EVENT_DATE to TEXT)
+                Favorite.EVENT_DATE to TEXT,
+                Favorite.EVENT_TIME to TEXT)
 
         db.createTable(FavoriteTeams.TABLE_FAVORITE_TEAMS,true,
                 FavoriteTeams.ID_FAVORITE_TEAMS to INTEGER + PRIMARY_KEY + AUTOINCREMENT,

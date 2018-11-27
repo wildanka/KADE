@@ -55,7 +55,7 @@ class RVAdapter(private val mContext: Context) : RecyclerView.Adapter<RVAdapter.
     }
 
     inner class RVHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvHomeClub = itemView.findViewById<TextView>(R.id.tv_home_club)
+        private val tvHomeClub = itemView.findViewById<TextView>(R.id.tv_home_club)
         val tvAwayClub = itemView.findViewById<TextView>(R.id.tv_away_club)
         val tvHomeClubScore = itemView.findViewById<TextView>(R.id.tv_home_club_score)
         val tvAwayClubScore = itemView.findViewById<TextView>(R.id.tv_away_club_score)
@@ -72,7 +72,7 @@ class RVAdapter(private val mContext: Context) : RecyclerView.Adapter<RVAdapter.
             var strDate  = DateTimeConverter.toGMTFormat(fixture.strDate!!,fixture.timeEvent!!)
             val cal : Calendar = Calendar.getInstance()
             cal.time = strDate
-            tvMatchDate.text = "${DateTimeConverter.dayConverter(strDate!!.day)}, ${strDate!!.date.toString()} ${DateTimeConverter.monthConverter(cal.get(Calendar.MONTH))} ${cal.get(Calendar.YEAR)}"
+            tvMatchDate.text = "${DateTimeConverter.dayConverter(strDate!!.day)}, ${strDate.date} ${DateTimeConverter.monthConverter(cal.get(Calendar.MONTH))} ${cal.get(Calendar.YEAR)}"
             tvMatchTime.text = cal.get(Calendar.HOUR_OF_DAY).toString()+":"+cal.get(Calendar.MINUTE).toString()+" WIB"
             itemView.setOnClickListener{
                 mContext.startActivity(Intent(mContext,DetailFixturesActivity::class.java)

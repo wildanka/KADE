@@ -42,6 +42,28 @@ class TeamRepository() {
         return teamsInLeague
     }
 
+    fun fetchSearchTeams(clubName: String): MutableLiveData<TeamLogoFeed> {
+        val call = placeHolderApi.getSearchTeams(clubName)
+        val teamsInLeague : MutableLiveData<TeamLogoFeed> = MutableLiveData()
+
+        call.enqueue(object : Callback<TeamLogoFeed> {
+            override fun onResponse(call: Call<TeamLogoFeed>, response: Response<TeamLogoFeed>) {
+                teamsInLeague.value = response.body()
+//                Log.d(TAG, eventDetails.value.fixtureDetails?.get(0)?.homeGoalKeeper)
+                println("HASIL REPO Teams : "+teamsInLeague.value!!.teamLogos!![0].idTeam)
+                println("HASIL REPO Teams : "+teamsInLeague.value!!.teamLogos!![0].teamName)
+                println("HASIL REPO Teams : "+teamsInLeague.value!!.teamLogos!![0].linkClubLogo)
+            }
+
+            override fun onFailure(call: Call<TeamLogoFeed>, t: Throwable) {
+                println("Failed to POST Message: ${ t?.message }")
+                teamsInLeague.value = null
+            }
+        })
+
+        return teamsInLeague
+    }
+
     fun fetchTeamDetailsOverview(idClub: String): MutableLiveData<String> {
         val call = placeHolderApi.getTeamsOverview(idClub)
         val teamsInLeague : MutableLiveData<TeamDetailsFeed> = MutableLiveData()

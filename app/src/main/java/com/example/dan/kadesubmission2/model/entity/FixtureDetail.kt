@@ -12,6 +12,14 @@ open class FixtureDetail {
     @Expose
     var dateEvent: String? = null
 
+    @SerializedName("strDate")
+    @Expose
+    var strDate: String? = null
+
+    @SerializedName("strTime")
+    @Expose
+    var strTime: String? = null
+
     @SerializedName("strHomeTeam")
     @Expose
     var strHomeTeam: String? = null
