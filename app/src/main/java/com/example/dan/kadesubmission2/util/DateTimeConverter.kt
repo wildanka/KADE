@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object DateTimeConverter {
-    fun dayConverter(dayInt : Int) : String?{
+    fun dayConverter(dayInt : Int?) : String?{
         when (dayInt) {
             0 -> return "Sun"
             1 -> return "Mon"
@@ -36,7 +36,7 @@ object DateTimeConverter {
         return "what?"
     }
 
-    fun toGMTFormat(date: String?, time: String): Date? {
+    fun toGMTFormat(date: String?, time: String?): Date? {
         val formatter = SimpleDateFormat("dd/MM/yy HH:mm:ss")
         formatter.timeZone = TimeZone.getTimeZone("UTC")
         val dateTime = "$date $time"

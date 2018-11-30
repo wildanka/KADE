@@ -33,9 +33,8 @@ class FixtureRepository() {
                 .enqueue(object: Callback<FixtureFeed> {
                     override fun onResponse(call: Call<FixtureFeed>, response: Response<FixtureFeed>) {
                         fixturesLiveData.value = response.body()
-                        Log.d(TAG, fixturesLiveData.value?.fixtures!![0].homeClub)
-                        println("HASIL REPO"+fixturesLiveData.value?.fixtures!![0].homeClub)
-
+                        Log.d(TAG, fixturesLiveData.value?.fixtures?.get(0)?.homeClub)
+                        println("HASIL REPO"+fixturesLiveData.value?.fixtures?.get(0)?.homeClub)
                     }
 
                     override fun onFailure(call: Call<FixtureFeed>, t: Throwable) {
@@ -98,7 +97,6 @@ class FixtureRepository() {
     }
 
     fun fetchTeamLogo(idClub: String): MutableLiveData<String>{
-//        val call = placeHolderApi.getTeamBadge(idClub)
         val teamLogo : MutableLiveData<TeamLogoFeed> = MutableLiveData()
         val urlTeamLogo : MutableLiveData<String> = MutableLiveData()
         ServiceGenerator
@@ -107,9 +105,9 @@ class FixtureRepository() {
                 .enqueue(object: Callback<TeamLogoFeed> {
                 override fun onResponse(call: Call<TeamLogoFeed>, response: Response<TeamLogoFeed>) {
                     teamLogo.value = response.body()
-                    Log.d(TAG, teamLogo.value?.teamLogos!![0].linkClubLogo)
-                    urlTeamLogo.value = teamLogo.value?.teamLogos!![0].linkClubLogo
-                    println("HASIL REPO Logo : "+teamLogo.value?.teamLogos!![0].linkClubLogo)
+//                    Log.d(TAG, teamLogo.value?.teamLogos?.get(0)?.linkClubLogo)
+                    urlTeamLogo.value = teamLogo.value?.teamLogos?.get(0)?.linkClubLogo
+                    println("HASIL REPO Logo : "+teamLogo.value?.teamLogos?.get(0)?.linkClubLogo)
                 }
 
                 override fun onFailure(call: Call<TeamLogoFeed>, t: Throwable) {
@@ -128,9 +126,6 @@ class FixtureRepository() {
         call.enqueue(object : Callback<FixtureDetailsFeed>{
             override fun onResponse(call: Call<FixtureDetailsFeed>, response: Response<FixtureDetailsFeed>) {
                 eventDetails.value = response.body()
-//                Log.d(TAG, eventDetails.value.fixtureDetails?.get(0)?.homeGoalKeeper)
-                println("HASIL REPO Events : "+eventDetails.value!!.fixtureDetails!![0].homeShots)
-                println("HASIL REPO Events : "+eventDetails.value!!.fixtureDetails!![0].homeGoalDetails)
             }
 
             override fun onFailure(call: Call<FixtureDetailsFeed>, t: Throwable) {

@@ -67,13 +67,6 @@ class PrevFixturesFragment : Fragment(){
         }
     }*/
 
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        viewModel = ViewModelProviders.of(this).get(PrevFixturesFragmentViewModel::class.java)
-        adapter = RVPrevFixturesAdapter(activity!!)
-        super.onActivityCreated(savedInstanceState)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list_match, container, false)
 

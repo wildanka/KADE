@@ -37,19 +37,19 @@ class DetailFixturesActivity : AppCompatActivity() {
     private val TAG = "DetailFixturesActivity"
     private var menuItem: Menu? = null
     private var isFavorite: Boolean = false
-    private lateinit var idEvent : String
-    private lateinit var idHome : String
-    private lateinit var idAway : String
+    private lateinit var idEvent: String
+    private lateinit var idHome: String
+    private lateinit var idAway: String
     private lateinit var homeClub: String
-    private lateinit var awayClub : String
-    private lateinit var homeClubScore : String
-    private lateinit var awayClubScore : String
-    private lateinit var date : String
-    private lateinit var time : String
+    private lateinit var awayClub: String
+    private lateinit var homeClubScore: String
+    private lateinit var awayClubScore: String
+    private lateinit var date: String
+    private lateinit var time: String
 
     private lateinit var repo: StorageRepository
     private lateinit var id: String
-    private var fixtureDetailsFeed : MutableLiveData<FixtureDetailsFeed> = MutableLiveData()
+    private var fixtureDetailsFeed: MutableLiveData<FixtureDetailsFeed> = MutableLiveData()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,7 +64,7 @@ class DetailFixturesActivity : AppCompatActivity() {
 
         val viewModel = ViewModelProviders.of(this).get(DetailsActivityViewModel::class.java)
 
-        observeBothTeamLogoFeed(viewModel,idHome,idAway)
+        observeBothTeamLogoFeed(viewModel, idHome, idAway)
         observeEventDetails(viewModel, idEvent)
 
         //binding data
@@ -81,18 +81,18 @@ class DetailFixturesActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when(item?.itemId){
-            android.R.id.home ->{
+        return when (item?.itemId) {
+            android.R.id.home -> {
                 finish()
                 true
             }
-            R.id.add_to_favorites ->{
-                if (::idEvent.isInitialized || ::idHome.isInitialized|| ::idAway.isInitialized || ::homeClub.isInitialized || ::awayClub.isInitialized || ::homeClubScore.isInitialized || ::awayClubScore.isInitialized|| ::date.isInitialized){
-                    if(isFavorite) removeFromFavorite() else addToFavorite()
+            R.id.add_to_favorites -> {
+                if (::idEvent.isInitialized || ::idHome.isInitialized || ::idAway.isInitialized || ::homeClub.isInitialized || ::awayClub.isInitialized || ::homeClubScore.isInitialized || ::awayClubScore.isInitialized || ::date.isInitialized) {
+                    if (isFavorite) removeFromFavorite() else addToFavorite()
                     isFavorite = !isFavorite
                     setFavorite()
-                }else{
-                    Toast.makeText(this,"Still Retrieving Data from Network, Please Try Again",Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Still Retrieving Data from Network, Please Try Again", Toast.LENGTH_SHORT).show()
                 }
                 true
             }
@@ -102,7 +102,7 @@ class DetailFixturesActivity : AppCompatActivity() {
         }
     }
 
-    private fun addToFavorite(){
+    private fun addToFavorite() {
         try {
             database.use {
                 insert(Favorite.TABLE_FAVORITE_EVENTS,
@@ -128,8 +128,8 @@ class DetailFixturesActivity : AppCompatActivity() {
                         menuItem?.getItem(0)?.icon = ContextCompat.getDrawable(this, ic_add_to_favorites)
                     }
             ).show()
-        } catch (e: SQLiteConstraintException){
-            println("Error while inserting data to database: ${ e?.message }")
+        } catch (e: SQLiteConstraintException) {
+            println("Error while inserting data to database: ${e?.message}")
             Log.getStackTraceString(e)
             Snackbar.make(detail_root_layout, e.localizedMessage, Snackbar.LENGTH_SHORT).show()
         }
@@ -142,32 +142,32 @@ class DetailFixturesActivity : AppCompatActivity() {
             menuItem?.getItem(0)?.icon = ContextCompat.getDrawable(this, ic_add_to_favorites)
     }
 
-    private fun removeFromFavorite(){
+    private fun removeFromFavorite() {
         try {
             database.use {
-                delete(Favorite.TABLE_FAVORITE_EVENTS, "(ID_EVENT = {id})","id" to idEvent)
+                delete(Favorite.TABLE_FAVORITE_EVENTS, "(ID_EVENT = {id})", "id" to idEvent)
             }
             println("BERHASIL DELETE HOREE")
             val snackbar = Snackbar.make(
                     detail_root_layout,
                     "Match Removed from Favorites",
                     Snackbar.LENGTH_LONG
-                ).setAction(
+            ).setAction(
                     "UNDO",
                     {
                         addToFavorite()
                         menuItem?.getItem(0)?.icon = ContextCompat.getDrawable(this, ic_added_to_favorites)
                     }
-                ).show()
+            ).show()
 
-        } catch (e: SQLiteConstraintException){
-            println("Error while Deleting data from database: ${ e?.message }")
+        } catch (e: SQLiteConstraintException) {
+            println("Error while Deleting data from database: ${e?.message}")
             Log.getStackTraceString(e)
         }
     }
 
-    private fun checkFavoriteState(){
-        try{
+    private fun checkFavoriteState() {
+        try {
             database.use {
                 val result = select(Favorite.TABLE_FAVORITE_EVENTS)
                         .whereArgs("(ID_EVENT = {id})",
@@ -175,19 +175,19 @@ class DetailFixturesActivity : AppCompatActivity() {
                 val favorite = result.parseList(classParser<Favorite>())
                 if (!favorite.isEmpty()) isFavorite = true
             }
-        }catch(e: SQLiteConstraintException){
-            println("Error Getting data from database: ${ e?.message }")
+        } catch (e: SQLiteConstraintException) {
+            println("Error Getting data from database: ${e?.message}")
         }
     }
 
-    private fun observeBothTeamLogoFeed(viewModel: DetailsActivityViewModel, idHome : String, idAway: String) {
+    private fun observeBothTeamLogoFeed(viewModel: DetailsActivityViewModel, idHome: String, idAway: String) {
         progressBarDetail.visibility = View.VISIBLE
-        viewModel.getHomeClubLogoFeed(idHome).observe(this, Observer<String>{teamLogo ->
+        viewModel.getHomeClubLogoFeed(idHome).observe(this, Observer<String> { teamLogo ->
             if (teamLogo != null) {
                 Picasso.get().load(teamLogo).into(iv_home_team)
             }
         })
-        viewModel.getAwayClubLogoFeed(idAway).observe(this, Observer<String>{teamLogo ->
+        viewModel.getAwayClubLogoFeed(idAway).observe(this, Observer<String> { teamLogo ->
             if (teamLogo != null) {
                 Picasso.get().load(teamLogo).into(iv_away_team)
             }
@@ -204,44 +204,66 @@ class DetailFixturesActivity : AppCompatActivity() {
     }
 */
 
-    private fun observeEventDetails(viewModel: DetailsActivityViewModel, idEvent : String){
-        viewModel.getFixtureDetails(idEvent).observe(this, Observer<FixtureDetailsFeed>{eventDetails ->
+    private fun observeEventDetails(viewModel: DetailsActivityViewModel, idEvent: String) {
+        viewModel.getFixtureDetails(idEvent).observe(this, Observer<FixtureDetailsFeed> { eventDetails ->
 
             if (eventDetails != null) {
-                this.homeClub = eventDetails.fixtureDetails!![0].strHomeTeam.toString()
-                this.awayClub = eventDetails.fixtureDetails!![0].strAwayTeam.toString()
-                this.homeClubScore = eventDetails.fixtureDetails!![0].homeScoreDetail.toString()
-                this.awayClubScore = eventDetails.fixtureDetails!![0].awayScoreDetail.toString()
+                this.homeClub = eventDetails.fixtureDetails?.get(0)?.strHomeTeam.toString()
+                this.awayClub = eventDetails.fixtureDetails?.get(0)?.strAwayTeam.toString()
+                this.homeClubScore = eventDetails.fixtureDetails?.get(0)?.homeScoreDetail.toString()
+                this.awayClubScore = eventDetails.fixtureDetails?.get(0)?.awayScoreDetail.toString()
 
-                println("EVENT DETAILS : "+ eventDetails.fixtureDetails!![0].strHomeTeam)
-                println("EVENT DETAILS : "+ eventDetails.fixtureDetails!![0].strAwayTeam)
-                println("EVENT DETAILS : "+ validateData(eventDetails.fixtureDetails!![0].homeGoalDetails))
-                println("EVENT DETAILS SHOTS: "+ validateData(eventDetails.fixtureDetails!![0].homeShots))
+                println("EVENT DETAILS : " + eventDetails.fixtureDetails?.get(0)?.strHomeTeam)
+                println("EVENT DETAILS : " + eventDetails.fixtureDetails?.get(0)?.strAwayTeam)
+                println("EVENT DETAILS : " + validateData(eventDetails.fixtureDetails?.get(0)?.homeGoalDetails))
+                println("EVENT DETAILS SHOTS: " + validateData(eventDetails.fixtureDetails?.get(0)?.homeShots))
 //                binding.tv.text = eventDetails.fixtureDetails!![0].dateEvent
-                tv_home_club_detail.text = validateData(eventDetails.fixtureDetails!![0].strHomeTeam)
-                tv_away_club_detail.text = validateData(eventDetails.fixtureDetails!![0].strAwayTeam)
-                tv_home_score_detail.text = validateData(eventDetails.fixtureDetails!![0].homeScoreDetail)
-                tv_away_score_detail.text = validateData(eventDetails.fixtureDetails!![0].awayScoreDetail)
-                tv_home_goals.text = validateData(eventDetails.fixtureDetails!![0].homeGoalDetails)
-                tv_away_goals.text = validateData(eventDetails.fixtureDetails!![0].awayGoalDetails)
-                tv_home_shot.text = validateData(eventDetails.fixtureDetails!![0].homeShots)
-                tv_away_shot.text = validateData(eventDetails.fixtureDetails!![0].awayShots)
-                tv_home_goalkeeper.text = validateData(eventDetails.fixtureDetails!![0].homeGoalKeeper)
-                tv_away_goalkeeper.text = validateData(eventDetails.fixtureDetails!![0].awayGoalKeeper)
-                tv_home_defense.text = validateData(eventDetails.fixtureDetails!![0].homeDefense)
-                tv_away_defense.text = validateData(eventDetails.fixtureDetails!![0].awayDefense)
-                tv_home_midfield.text = validateData(eventDetails.fixtureDetails!![0].homeMidfield)
-                tv_away_midfield.text = validateData(eventDetails.fixtureDetails!![0].awayMidfield)
-                tv_home_forward.text = validateData(eventDetails.fixtureDetails!![0].homeForward)
-                tv_away_forward.text = validateData(eventDetails.fixtureDetails!![0].awayForward)
-                tv_home_subs.text = validateData(eventDetails.fixtureDetails!![0].homeSubs)
-                tv_away_subs.text = validateData(eventDetails.fixtureDetails!![0].awaySubs)
+                tv_home_club_detail.text = validateData(eventDetails.fixtureDetails?.get(0)?.strHomeTeam)
+                tv_away_club_detail.text = validateData(eventDetails.fixtureDetails?.get(0)?.strAwayTeam)
+                tv_home_score_detail.text = validateData(eventDetails.fixtureDetails?.get(0)?.homeScoreDetail)
+                tv_away_score_detail.text = validateData(eventDetails.fixtureDetails?.get(0)?.awayScoreDetail)
+                tv_home_goals.text = validateData(eventDetails.fixtureDetails?.get(0)?.homeGoalDetails)
+                tv_away_goals.text = validateData(eventDetails.fixtureDetails?.get(0)?.awayGoalDetails)
+                tv_home_shot.text = validateData(eventDetails.fixtureDetails?.get(0)?.homeShots)
+                tv_away_shot.text = validateData(eventDetails.fixtureDetails?.get(0)?.awayShots)
+                tv_home_goalkeeper.text = validateData(eventDetails.fixtureDetails?.get(0)?.homeGoalKeeper)
+                tv_away_goalkeeper.text = validateData(eventDetails.fixtureDetails?.get(0)?.awayGoalKeeper)
+                tv_home_defense.text = validateData(eventDetails.fixtureDetails?.get(0)?.homeDefense)
+                tv_away_defense.text = validateData(eventDetails.fixtureDetails?.get(0)?.awayDefense)
+                tv_home_midfield.text = validateData(eventDetails.fixtureDetails?.get(0)?.homeMidfield)
+                tv_away_midfield.text = validateData(eventDetails.fixtureDetails?.get(0)?.awayMidfield)
+                tv_home_forward.text = validateData(eventDetails.fixtureDetails?.get(0)?.homeForward)
+                tv_away_forward.text = validateData(eventDetails.fixtureDetails?.get(0)?.awayForward)
+                tv_home_subs.text = validateData(eventDetails.fixtureDetails?.get(0)?.homeSubs)
+                tv_away_subs.text = validateData(eventDetails.fixtureDetails?.get(0)?.awaySubs)
                 //convert heula
-                val strDate  = DateTimeConverter.toGMTFormat(eventDetails.fixtureDetails!![0].strDate!!,eventDetails.fixtureDetails!![0].strTime!!)
-                val cal : Calendar = Calendar.getInstance()
+                //check if strDate or strTime is null, then create a dummy
+                val eventDate: String? = if (eventDetails.fixtureDetails?.get(0)?.strDate == null) {
+                    "03/11/18" //create dummy date
+                } else {
+                    eventDetails.fixtureDetails?.get(0)?.strDate
+                }
+                val eventTime: String? = if (eventDetails.fixtureDetails?.get(0)?.strTime == null) {
+                    "15:00:00+00:00"
+                }else{
+                    eventDetails.fixtureDetails?.get(0)?.strTime
+                }
+                val strDate = DateTimeConverter.toGMTFormat(eventDate, eventTime)
+
+                val cal: Calendar = Calendar.getInstance()
                 cal.time = strDate
-                this.date = "${DateTimeConverter.dayConverter(strDate!!.day)}, ${strDate!!.date.toString()} ${DateTimeConverter.monthConverter(cal.get(Calendar.MONTH))} ${cal.get(Calendar.YEAR)}"
-                this.time = DateTimeConverter.toDoubleDigit(cal.get(Calendar.HOUR_OF_DAY).toString())+":"+DateTimeConverter.toDoubleDigit(cal.get(Calendar.MINUTE).toString())+" WIB"
+
+                if (eventDetails.fixtureDetails?.get(0)?.strDate == null) { //because the data is only dummy data, then don't show it to users
+                    this.date = "No Official Date Yet"
+                }else{//if it's real then show it
+                    this.date = "${DateTimeConverter.dayConverter(strDate?.day)}, ${strDate?.date.toString()} ${DateTimeConverter.monthConverter(cal.get(Calendar.MONTH))} ${cal.get(Calendar.YEAR)}"
+                }
+
+                if (eventDetails.fixtureDetails?.get(0)?.strTime == null) { //because the data is only dummy data, then don't show it to users
+                    this.date = "No Official Time Yet"
+                }else{//it's real? then show it
+                    this.time = DateTimeConverter.toDoubleDigit(cal.get(Calendar.HOUR_OF_DAY).toString()) + ":" + DateTimeConverter.toDoubleDigit(cal.get(Calendar.MINUTE).toString()) + " WIB"
+                }
                 tv_match_time_detail.text = this.date
                 tv_match_detail_kick_off.text = this.time
             }
