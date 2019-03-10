@@ -1,10 +1,16 @@
 package com.example.dan.kadesubmission2.util
 
+import android.annotation.SuppressLint
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
 object DateTimeConverter {
+    @SuppressLint("SimpleDateFormat")
+    fun toSimpleString(date: Date?): String? = with(date ?: Date()) {
+        SimpleDateFormat("EEE, dd MMM yyy").format(this)
+    }
+
     fun dayConverter(dayInt : Int?) : String?{
         when (dayInt) {
             0 -> return "Sun"
@@ -42,9 +48,24 @@ object DateTimeConverter {
         val dateTime = "$date $time"
         return formatter.parse(dateTime)
     }
+    //region
 
+    fun toGMTFormatStrDate(date: String?, time: String?): Date? {
+        val formatter = SimpleDateFormat("MM/dd/yy HH:mm:ss")
+        formatter.timeZone = TimeZone.getTimeZone("UTC")
+        val dateTime = "$date $time"
+        return formatter.parse(dateTime)
+    }
     fun toGMTFormatSearch(date: String?, time: String): Date? {
         val formatter = SimpleDateFormat("dd/mm/yy HH:mm:ss")
+        formatter.timeZone = TimeZone.getTimeZone("UTC")
+        val dateTime = "$date $time"
+        return formatter.parse(dateTime)
+    }
+    //endregion
+
+    fun toGMTFormatDateEvent(date: String?, time: String?): Date? {
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         formatter.timeZone = TimeZone.getTimeZone("UTC")
         val dateTime = "$date $time"
         return formatter.parse(dateTime)
@@ -56,4 +77,6 @@ object DateTimeConverter {
         }
         return angka
     }
+
+
 }

@@ -31,6 +31,10 @@ import org.jetbrains.anko.db.classParser
 import org.jetbrains.anko.db.delete
 import org.jetbrains.anko.db.insert
 import org.jetbrains.anko.db.select
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class DetailFixturesActivity : AppCompatActivity() {
@@ -194,16 +198,6 @@ class DetailFixturesActivity : AppCompatActivity() {
         })
     }
 
-/*
-    private fun loadHomeLogo(viewModel: DetailsActivityViewModel, idHome : String){
-        viewModel.getHomeClubLogoFeed(idHome).observe(this, Observer<TeamLogoFeed>{teamLogo ->
-            if (teamLogo != null) {
-                Picasso.get().load(teamLogo.teamLogos?.linkClubLogo).into(iv_home_team)
-            }
-        })
-    }
-*/
-
     private fun observeEventDetails(viewModel: DetailsActivityViewModel, idEvent: String) {
         viewModel.getFixtureDetails(idEvent).observe(this, Observer<FixtureDetailsFeed> { eventDetails ->
 
@@ -236,28 +230,54 @@ class DetailFixturesActivity : AppCompatActivity() {
                 tv_away_forward.text = validateData(eventDetails.fixtureDetails?.get(0)?.awayForward)
                 tv_home_subs.text = validateData(eventDetails.fixtureDetails?.get(0)?.homeSubs)
                 tv_away_subs.text = validateData(eventDetails.fixtureDetails?.get(0)?.awaySubs)
-                //convert heula
-                //check if strDate or strTime is null, then create a dummy
-                val eventDate: String? = if (eventDetails.fixtureDetails?.get(0)?.strDate == null) {
-                    "03/11/18" //create dummy date
-                } else {
-                    eventDetails.fixtureDetails?.get(0)?.strDate
-                }
+
+                //region create eventTime
                 val eventTime: String? = if (eventDetails.fixtureDetails?.get(0)?.strTime == null) {
                     "15:00:00+00:00"
                 }else{
                     eventDetails.fixtureDetails?.get(0)?.strTime
                 }
-                val strDate = DateTimeConverter.toGMTFormat(eventDate, eventTime)
+                //endregion create eventTime
 
-                val cal: Calendar = Calendar.getInstance()
-                cal.time = strDate
 
-                if (eventDetails.fixtureDetails?.get(0)?.strDate == null) { //because the data is only dummy data, then don't show it to users
+
+                var eventDate: String? = null
+
+                //create eventTime after check whether dateEvent or strDate is null or even both are null?
+                if ( eventDetails.fixtureDetails?.get(0)?.dateEvent.isNullOrEmpty() && eventDetails.fixtureDetails?.get(0)?.strDate.isNullOrEmpty()){
                     this.date = "No Official Date Yet"
+                }else{
+                    //if one of them is exist
+                    if (eventDetails.fixtureDetails?.get(0)?.strDate != null){ //if strDate is exists, then use strDate
+                        eventDate = eventDetails.fixtureDetails?.get(0)?.strDate
+                    }else if (eventDetails.fixtureDetails?.get(0)?.dateEvent != null){//if strDate is not exists, but dateEvent is exists use dateEvent
+                        //get the value of dateEvent
+                        val dateEvent = eventDetails.fixtureDetails?.get(0)?.dateEvent
+
+                        //format the dateEvent to the same format as strDate
+                        //TODO: create the converter from dateEventFormat to strDateFormat (from "YYYY-mm-dd" to "day, dd mm yyyy")
+                        val formattedEventDate = "03/11/17"
+
+                        //update the eventDate
+                        eventDate = formattedEventDate
+                    }else{ //create dummy strDate
+                        //check if strDate or strTime is null, then create a dummy
+                        eventDate = "03/11/18" //create dummy date
+                    }
+                }
+
+
+                val strDate = DateTimeConverter.toGMTFormat(eventDate, eventTime)
+                val cal: Calendar = Calendar.getInstance()
+
+
+                if (eventDetails.fixtureDetails?.get(0)?.strDate == null) { //check the date data, if strDate is null
+                    //then check eventDate data, if eventDate data is null too then show "No Official Date Yet", else just show the converted dateEvent datas.
+                    if (eventDetails.fixtureDetails?.get(0)?.dateEvent == null) this.date = "No Official Date Yet" else this.date = eventDetails.fixtureDetails?.get(0)?.dateEvent.toString()
                 }else{//if it's real then show it
                     this.date = "${DateTimeConverter.dayConverter(strDate?.day)}, ${strDate?.date.toString()} ${DateTimeConverter.monthConverter(cal.get(Calendar.MONTH))} ${cal.get(Calendar.YEAR)}"
                 }
+                cal.time = strDate
 
                 if (eventDetails.fixtureDetails?.get(0)?.strTime == null) { //because the data is only dummy data, then don't show it to users
                     this.date = "No Official Time Yet"
