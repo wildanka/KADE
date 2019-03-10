@@ -18,7 +18,6 @@ import com.example.dan.kadesubmission2.R.drawable.ic_add_to_favorites
 import com.example.dan.kadesubmission2.R.drawable.ic_added_to_favorites
 import com.example.dan.kadesubmission2.model.entity.Favorite
 import com.example.dan.kadesubmission2.model.entity.FixtureDetailsFeed
-import com.example.dan.kadesubmission2.model.entity.TeamLogoFeed
 import com.example.dan.kadesubmission2.model.localStorage.database
 import com.example.dan.kadesubmission2.repository.StorageRepository
 import com.example.dan.kadesubmission2.util.DateTimeConverter
@@ -27,14 +26,12 @@ import com.squareup.picasso.Picasso
 
 import kotlinx.android.synthetic.main.activity_detail_fixtures.*
 import kotlinx.android.synthetic.main.content_detail_fixtures.*
+import kotlinx.android.synthetic.main.item_list_match.*
 import org.jetbrains.anko.db.classParser
 import org.jetbrains.anko.db.delete
 import org.jetbrains.anko.db.insert
 import org.jetbrains.anko.db.select
-import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 class DetailFixturesActivity : AppCompatActivity() {
@@ -126,12 +123,11 @@ class DetailFixturesActivity : AppCompatActivity() {
                     "Match Added to Favorites",
                     Snackbar.LENGTH_LONG
             ).setAction(
-                    "UNDO",
-                    {
-                        removeFromFavorite()
-                        menuItem?.getItem(0)?.icon = ContextCompat.getDrawable(this, ic_add_to_favorites)
-                    }
-            ).show()
+                    "UNDO"
+            ) {
+                removeFromFavorite()
+                menuItem?.getItem(0)?.icon = ContextCompat.getDrawable(this, ic_add_to_favorites)
+            }.show()
         } catch (e: SQLiteConstraintException) {
             println("Error while inserting data to database: ${e?.message}")
             Log.getStackTraceString(e)
@@ -157,12 +153,11 @@ class DetailFixturesActivity : AppCompatActivity() {
                     "Match Removed from Favorites",
                     Snackbar.LENGTH_LONG
             ).setAction(
-                    "UNDO",
-                    {
-                        addToFavorite()
-                        menuItem?.getItem(0)?.icon = ContextCompat.getDrawable(this, ic_added_to_favorites)
-                    }
-            ).show()
+                    "UNDO"
+            ) {
+                addToFavorite()
+                menuItem?.getItem(0)?.icon = ContextCompat.getDrawable(this, ic_added_to_favorites)
+            }.show()
 
         } catch (e: SQLiteConstraintException) {
             println("Error while Deleting data from database: ${e?.message}")
@@ -231,54 +226,53 @@ class DetailFixturesActivity : AppCompatActivity() {
                 tv_home_subs.text = validateData(eventDetails.fixtureDetails?.get(0)?.homeSubs)
                 tv_away_subs.text = validateData(eventDetails.fixtureDetails?.get(0)?.awaySubs)
 
-                //region create eventTime
-                val eventTime: String? = if (eventDetails.fixtureDetails?.get(0)?.strTime == null) {
-                    "15:00:00+00:00"
-                }else{
-                    eventDetails.fixtureDetails?.get(0)?.strTime
-                }
-                //endregion create eventTime
-
-
-
+                //1. initialize the eventTime & eventDate to be formatted
+                val eventTime: String? = if (eventDetails.fixtureDetails?.get(0)?.strTime == null) { "15:00:00+00:00"}else{eventDetails.fixtureDetails?.get(0)?.strTime}
                 var eventDate: String? = null
 
-                //create eventTime after check whether dateEvent or strDate is null or even both are null?
-                if ( eventDetails.fixtureDetails?.get(0)?.dateEvent.isNullOrEmpty() && eventDetails.fixtureDetails?.get(0)?.strDate.isNullOrEmpty()){
-                    this.date = "No Official Date Yet"
-                }else{
-                    //if one of them is exist
-                    if (eventDetails.fixtureDetails?.get(0)?.strDate != null){ //if strDate is exists, then use strDate
+
+                // 2. create eventTime after we create the eventDate from this process :
+                // 2. create the eventDate from this process :
+                // checking whether dateEvent or strDate is null or even both are null?
+                if ( eventDetails.fixtureDetails?.get(0)?.dateEvent.isNullOrEmpty() && eventDetails.fixtureDetails?.get(0)?.strDate.isNullOrEmpty()){ // a. if empty then no official date yet
+                    eventDate = "03/11/18" //create dummy date
+                }else{// b. if one of the variable is not empty
+
+                    if (eventDetails.fixtureDetails?.get(0)?.strDate != null){ //b1. if strDate is exists, then use strDate
                         eventDate = eventDetails.fixtureDetails?.get(0)?.strDate
-                    }else if (eventDetails.fixtureDetails?.get(0)?.dateEvent != null){//if strDate is not exists, but dateEvent is exists use dateEvent
-                        //get the value of dateEvent
-                        val dateEvent = eventDetails.fixtureDetails?.get(0)?.dateEvent
+                    }else { //b2. if strDate is not exists but dateEvent is exists then use dateEvent
 
-                        //format the dateEvent to the same format as strDate
-                        //TODO: create the converter from dateEventFormat to strDateFormat (from "YYYY-mm-dd" to "day, dd mm yyyy")
-                        val formattedEventDate = "03/11/17"
-
-                        //update the eventDate
-                        eventDate = formattedEventDate
-                    }else{ //create dummy strDate
-                        //check if strDate or strTime is null, then create a dummy
-                        eventDate = "03/11/18" //create dummy date
+                        if (eventDetails.fixtureDetails?.get(0)?.dateEvent != null) { //b2.1 if dateEventData is Exists then use it
+                            // to use dateEvent,
+                            // First, we need to convert it
+                            val strYear = eventDetails.fixtureDetails?.get(0)?.dateEvent?.substring(2, 4)
+                            val strM = eventDetails.fixtureDetails?.get(0)?.dateEvent!!.substring(5, 7)
+                            val strDay = eventDetails.fixtureDetails?.get(0)?.dateEvent!!.substring(8, 10)
+                            println("dateEvent to strDateResult $strDay/$strM/$strYear")
+                            //Second, after converting the dateEvent format to the same format as strDate. Update the eventDate
+                            eventDate = "$strDay/$strM/$strYear"
+                        }
                     }
                 }
+                //all of the resulted eventDate (from strDate or from converted dateEvent will be used here)
+                val strDateResult = DateTimeConverter.toGMTFormat(eventDate, eventTime)
+                println("$strDateResult which are from \n " +
+                        "month :  ${strDateResult?.month.toString()}  \n" +
+                        "year : ${strDateResult?.year.toString()} ")
 
-
-                val strDate = DateTimeConverter.toGMTFormat(eventDate, eventTime)
+                //create a calendar instance
                 val cal: Calendar = Calendar.getInstance()
+                cal.time = strDateResult //and make sure to set the time before use the calendar!
 
-
-                if (eventDetails.fixtureDetails?.get(0)?.strDate == null) { //check the date data, if strDate is null
-                    //then check eventDate data, if eventDate data is null too then show "No Official Date Yet", else just show the converted dateEvent datas.
-                    if (eventDetails.fixtureDetails?.get(0)?.dateEvent == null) this.date = "No Official Date Yet" else this.date = eventDetails.fixtureDetails?.get(0)?.dateEvent.toString()
-                }else{//if it's real then show it
-                    this.date = "${DateTimeConverter.dayConverter(strDate?.day)}, ${strDate?.date.toString()} ${DateTimeConverter.monthConverter(cal.get(Calendar.MONTH))} ${cal.get(Calendar.YEAR)}"
+                //show the final result
+                if (eventDetails.fixtureDetails?.get(0)?.strDate == null  && eventDetails.fixtureDetails?.get(0)?.dateEvent == null ) { //check the date data, if strDate and dateEvent is null, then the date data is just a dummy
+                    this.date = "No Official Date Yet"
+                }else{//if date data is real then show it
+                    println("CALENDAR MONTH ${cal.get(Calendar.MONTH)} | ${DateTimeConverter.toSimpleString(strDateResult)}")
+                    this.date = DateTimeConverter.toSimpleString(strDateResult).toString()
                 }
-                cal.time = strDate
 
+                //Show the Time Data
                 if (eventDetails.fixtureDetails?.get(0)?.strTime == null) { //because the data is only dummy data, then don't show it to users
                     this.date = "No Official Time Yet"
                 }else{//it's real? then show it

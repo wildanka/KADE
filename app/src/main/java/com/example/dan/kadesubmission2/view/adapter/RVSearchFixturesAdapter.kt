@@ -100,11 +100,11 @@ class RVSearchFixturesAdapter(private val mContext: Context) : RecyclerView.Adap
                 val strYear = fixture.dateEvent!!.substring(2,4)
                 val strM = fixture.dateEvent!!.substring(5,7)
                 val strDay = fixture.dateEvent!!.substring(8,10)
-                println("HASIL SEARCH $strYear / $strM / $strDay")
-                val strDate  = DateTimeConverter.toGMTFormat("$strDay/$strM/$strYear",fixture.timeEvent!!)
+                println("HASIL SEARCH $strYear / $strM / $strDay | id: ${fixture.idEvent}")
+                val strDateResult  = DateTimeConverter.toGMTFormat("$strDay/$strM/$strYear",fixture.timeEvent!!)
                 val cal : Calendar = Calendar.getInstance()
-                cal.time = strDate
-                tvMatchDate.text = "${DateTimeConverter.dayConverter(strDate!!.day)}, ${strDate!!.date.toString()} ${DateTimeConverter.monthConverter(cal.get(Calendar.MONTH))} ${cal.get(Calendar.YEAR)}"
+                cal.time = strDateResult
+                tvMatchDate.text = DateTimeConverter.toSimpleString(strDateResult).toString()
                 tvMatchTime.text = DateTimeConverter.toDoubleDigit(cal.get(Calendar.HOUR_OF_DAY).toString())+":"+DateTimeConverter.toDoubleDigit(cal.get(Calendar.MINUTE).toString())+" WIB"
             }
 

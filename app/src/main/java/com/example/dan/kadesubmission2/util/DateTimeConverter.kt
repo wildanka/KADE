@@ -24,7 +24,7 @@ object DateTimeConverter {
         return "what?"
     }
 
-    fun monthConverter(monthInt : Int) : String?{
+    fun monthConverter(monthInt : Int?) : String?{
         when (monthInt) {
             0 -> return "Jan"
             1 -> return "Feb"
